@@ -45,7 +45,7 @@ public class ConnectorTCP implements Connector {
 	}
 
 	@Override
-	public String recieve() {
+	public String receive() {
 		String str = "";
 		try {
 			br = new BufferedReader(new InputStreamReader(client.getInputStream()));

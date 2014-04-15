@@ -18,7 +18,7 @@ public class Server {
 				String ip = server.acceptClient();
 				countConnection++;
 				System.out.println("IP: "+ip);
-				String msg = server.recieve();
+				String msg = server.receive();
 				j.put(ip+" - conn-"+countConnection, msg+" - "+ip);
 			}
 			for (Entry<String,Object> entry : j.entrySet()) {

@@ -22,7 +22,7 @@ public interface Connector {
 	 * 
 	 * @return
 	 */
-	public String recieve();
+	public String receive();
 	
 	public void startServer(int port) throws IOException;
 	

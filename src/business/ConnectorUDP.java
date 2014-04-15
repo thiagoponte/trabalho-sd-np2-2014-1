@@ -19,7 +19,7 @@ public class ConnectorUDP implements Connector {
 	}
 
 	@Override
-	public String recieve() {
+	public String receive() {
 		// TODO Auto-generated method stub
 		return null;
 	}
