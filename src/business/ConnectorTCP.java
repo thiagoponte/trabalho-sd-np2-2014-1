@@ -62,6 +62,7 @@ public class ConnectorTCP implements Connector {
 			try {
 				os.flush();
 				os.close();
+				s.close();
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
