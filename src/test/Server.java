@@ -11,7 +11,7 @@ public class Server {
 		Connector server;
 		try {
 			HashMap<String, Object> j = new HashMap<String, Object>();
-			server = ConnectorFactory.getConnector(ConnectorFactory.TCP);
+			server = ConnectorFactory.getConnector(ConnectorFactory.UDP);
 			server.startServer(10080);
 			int countConnection = 0;
 			while(countConnection < 4){

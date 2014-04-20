@@ -6,21 +6,21 @@ public interface Connector {
 
 	/**
 	 * 
-	 * @param ip
-	 * @param port
+	 * @param ip: IP para conexão
+	 * @param port: Porta para conexão
 	 */
 	public void connect(String ip, int port);
 	
 	/**
 	 * 
-	 * @param message
+	 * @param message: Mensagem a ser enviada
 	 * @return
 	 */
 	public String send(String message);
 	
 	/**
 	 * 
-	 * @return
+	 * @return A String recebida
 	 */
 	public String receive();
 	

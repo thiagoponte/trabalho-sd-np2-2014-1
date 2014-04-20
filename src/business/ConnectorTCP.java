@@ -17,7 +17,7 @@ public class ConnectorTCP implements Connector {
 	private BufferedReader br = null;
 	private ServerSocket ss = null;
 	private Socket client = null;
-	
+
 	@Override
 	public void connect(String ip, int port) {
 		// TODO Auto-generated method stub
@@ -58,7 +58,7 @@ public class ConnectorTCP implements Connector {
 
 	@Override
 	public void close() {
-		if(os != null){
+		if (os != null) {
 			try {
 				os.flush();
 				os.close();
@@ -80,6 +80,5 @@ public class ConnectorTCP implements Connector {
 		client = ss.accept();
 		return client.getLocalAddress().getHostAddress();
 	}
-	
 
 }
