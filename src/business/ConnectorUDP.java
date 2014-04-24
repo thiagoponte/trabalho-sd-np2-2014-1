@@ -6,6 +6,7 @@ import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.SocketException;
+import java.util.ArrayList;
 
 import interfaces.Connector;
 
@@ -13,7 +14,7 @@ public class ConnectorUDP implements Connector {
 
 	private DatagramSocket ds = null;
 	private DatagramSocket ss = null;
-	private InetAddress client = null;
+	private ArrayList<DatagramSocket> clients = null;
 
 	@Override
 	public void connect(String ip, int port) {
@@ -54,7 +55,6 @@ public class ConnectorUDP implements Connector {
 			} else if (ss != null) {
 				ss.receive(pacote);
 			}
-			client = pacote.getAddress();
 			str = new String(pacote.getData(), 0, pacote.getLength());
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -74,6 +74,7 @@ public class ConnectorUDP implements Connector {
 	public void startServer(int port) {
 		try {
 			ss = new DatagramSocket(port);
+			clients = new ArrayList<DatagramSocket>();
 		} catch (SocketException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -83,10 +84,23 @@ public class ConnectorUDP implements Connector {
 	@Override
 	public String acceptClient() throws IOException {
 		// accept bloqueia enquanto não receber uma conexão
-		while (client == null) {
-			receive();
+
+		byte[] buffer = new byte[1000];
+		DatagramSocket c = new DatagramSocket();
+		DatagramPacket pacote = new DatagramPacket(buffer, buffer.length);
+		try {
+			if (ss != null) {
+				ss.receive(pacote);
+			}
+
+			c.connect(pacote.getAddress(), pacote.getPort());
+			clients.add(c);
+
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
-		return client.getHostAddress();
+
+		return c.getLocalAddress().getHostAddress();
 
 	}
 
