@@ -38,6 +38,8 @@ public class ConnectorTCP implements Connector {
 		try {
 			if(ss == null){
 				os = new BufferedWriter(new OutputStreamWriter(s.getOutputStream()));
+				ip = s.getLocalAddress().getHostAddress();
+				System.out.println(ip);
 			}else{
 				os = new BufferedWriter(new OutputStreamWriter(clients.get(ip).getOutputStream()));
 			}
