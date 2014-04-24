@@ -29,7 +29,7 @@ public class ConnectorUDP implements Connector {
 	}
 
 	@Override
-	public String send(String message) {
+	public String send(String message, String ip) {
 		String retorno = "S";
 		DatagramPacket pacote;
 		try {
@@ -43,7 +43,7 @@ public class ConnectorUDP implements Connector {
 	}
 
 	@Override
-	public String receive() {
+	public String receive(String ip) {
 
 		String str = "";
 
@@ -83,7 +83,7 @@ public class ConnectorUDP implements Connector {
 
 	@Override
 	public String acceptClient() throws IOException {
-		// accept bloqueia enquanto não receber uma conexão
+		// accept bloqueia enquanto nï¿½o receber uma conexï¿½o
 
 		byte[] buffer = new byte[1000];
 		DatagramSocket c = new DatagramSocket();

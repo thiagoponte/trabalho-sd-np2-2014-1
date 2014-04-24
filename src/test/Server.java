@@ -11,15 +11,15 @@ public class Server {
 		Connector server;
 		try {
 			HashMap<String, Object> j = new HashMap<String, Object>();
-			server = ConnectorFactory.getConnector(ConnectorFactory.UDP);
+			server = ConnectorFactory.getConnector(ConnectorFactory.TCP);
 			server.startServer(10080);
 			int countConnection = 0;
-			while(countConnection < 4){
+			while(countConnection < 1){
 				String ip = server.acceptClient();
 				countConnection++;
-				System.out.println("IP: "+ip);
-				String msg = server.receive();
-				j.put(ip+" - conn-"+countConnection, msg+" - "+ip);
+				String msg = server.receive(ip);
+				j.put(ip+" - conn-"+countConnection, msg);
+				server.send("recebi as suas coordenadas, player-"+countConnection+".", ip);
 			}
 			for (Entry<String,Object> entry : j.entrySet()) {
 				System.out.println("Key: "+entry.getKey());

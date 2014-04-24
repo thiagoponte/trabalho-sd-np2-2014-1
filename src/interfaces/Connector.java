@@ -6,8 +6,8 @@ public interface Connector {
 
 	/**
 	 * 
-	 * @param ip: IP para conexão
-	 * @param port: Porta para conexão
+	 * @param ip: IP para conexï¿½o
+	 * @param port: Porta para conexï¿½o
 	 */
 	public void connect(String ip, int port);
 	
@@ -16,13 +16,13 @@ public interface Connector {
 	 * @param message: Mensagem a ser enviada
 	 * @return
 	 */
-	public String send(String message);
+	public String send(String message, String ip);
 	
 	/**
 	 * 
 	 * @return A String recebida
 	 */
-	public String receive();
+	public String receive(String ip);
 	
 	public void startServer(int port) throws IOException;
 	
@@ -32,5 +32,6 @@ public interface Connector {
 	 * 
 	 */
 	public void close();
+
 	
 }

@@ -10,6 +10,7 @@ import java.io.OutputStreamWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.util.HashMap;
 
 public class ConnectorTCP implements Connector {
 	private Socket s = null;
@@ -17,6 +18,7 @@ public class ConnectorTCP implements Connector {
 	private BufferedReader br = null;
 	private ServerSocket ss = null;
 	private Socket client = null;
+	HashMap<String, Socket> clients;
 
 	@Override
 	public void connect(String ip, int port) {
@@ -31,24 +33,31 @@ public class ConnectorTCP implements Connector {
 	}
 
 	@Override
-	public String send(String message) {
-		String retorno = "S";
+	public String send(String message, String ip) {
+		String retorno = "N";
 		try {
-			os = new BufferedWriter(new OutputStreamWriter(s.getOutputStream()));
-			os.write(message);
+			if(ss == null){
+				os = new BufferedWriter(new OutputStreamWriter(s.getOutputStream()));
+			}else{
+				os = new BufferedWriter(new OutputStreamWriter(clients.get(ip).getOutputStream()));
+			}
+			os.write(ip+"|"+message+"\n");
 			os.flush();
 		} catch (IOException e) {
 			e.printStackTrace();
-			retorno = "N";
 		}
 		return retorno;
 	}
 
 	@Override
-	public String receive() {
+	public String receive(String ip) {
 		String str = "";
 		try {
-			br = new BufferedReader(new InputStreamReader(client.getInputStream()));
+			if(ss == null){
+				br = new BufferedReader(new InputStreamReader(s.getInputStream()));
+			}else{
+				br = new BufferedReader(new InputStreamReader(clients.get(ip).getInputStream()));
+			}
 			str = br.readLine();
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -62,6 +71,10 @@ public class ConnectorTCP implements Connector {
 			try {
 				os.flush();
 				os.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			try {
 				s.close();
 			} catch (IOException e) {
 				e.printStackTrace();
@@ -73,12 +86,14 @@ public class ConnectorTCP implements Connector {
 	@Override
 	public void startServer(int port) throws IOException {
 		ss = new ServerSocket(port);
+		clients = new HashMap<String, Socket>();
 	}
 
 	@Override
 	public String acceptClient() throws IOException {
 		client = ss.accept();
-		return client.getLocalAddress().getHostAddress();
+		clients.put(client.getInetAddress().getHostAddress(), client);
+		return client.getInetAddress().getHostAddress();
 	}
 
 }
