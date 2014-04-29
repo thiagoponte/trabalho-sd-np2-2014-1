@@ -5,33 +5,20 @@ import java.io.IOException;
 public interface Connector {
 
 	/**
-	 * 
-	 * @param ip: IP para conexï¿½o
-	 * @param port: Porta para conexï¿½o
+	 * Primeiro método a ser iniciado do lado do cliente.
+	 * @param ip - IP para conexão
+	 * @param port - Porta para conexão
 	 */
-	public void connect(String ip, int port);
+	public Connection connect(String ip, int port);
+	
 	
 	/**
-	 * 
-	 * @param message: Mensagem a ser enviada
+	 * Primeiro método a ser iniciado para o lado do servidor.
+	 * @param port
 	 * @return
+	 * @throws IOException
 	 */
-	public String send(String message, String ip);
+	public Connection startServer(int port) throws IOException;
 	
-	/**
-	 * 
-	 * @return A String recebida
-	 */
-	public String receive(String ip);
-	
-	public void startServer(int port) throws IOException;
-	
-	public String acceptClient() throws IOException;
-	
-	/**
-	 * 
-	 */
-	public void close();
-
 	
 }

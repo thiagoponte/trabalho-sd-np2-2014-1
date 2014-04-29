@@ -1,18 +1,19 @@
 package test;
 
-import interfaces.Connector;
 import factory.ConnectorFactory;
+import interfaces.Connection;
+import interfaces.Connector;
 
 public class Client {
 	public static void main(String[] args) {
 		try {
-			String ip = "172.17.9.49";
+			String ip = "localhost";
 			Connector client = ConnectorFactory.getConnector(ConnectorFactory.TCP);
-			client.connect(ip, 10080);
-			client.send("coordenadas xy", ip);
-			String resposta = client.receive(ip);
+			Connection connection = client.connect(ip, 10080);
+			connection.send("coordenadas xy", ip);
+			String resposta = connection.receive(ip);
 			System.out.println(resposta);
-			client.close();
+			connection.close();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

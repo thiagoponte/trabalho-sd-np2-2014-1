@@ -8,16 +8,17 @@ import java.net.InetSocketAddress;
 import java.net.SocketException;
 import java.util.ArrayList;
 
+import interfaces.Connection;
 import interfaces.Connector;
 
-public class ConnectorUDP implements Connector {
+public class ConnectorUDP implements Connector, Connection {
 
 	private DatagramSocket ds = null;
 	private DatagramSocket ss = null;
 	private ArrayList<DatagramSocket> clients = null;
 
 	@Override
-	public void connect(String ip, int port) {
+	public Connection connect(String ip, int port) {
 		// TODO Auto-generated method stub
 		try {
 			ds = new DatagramSocket();
@@ -25,7 +26,7 @@ public class ConnectorUDP implements Connector {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-
+		return this;
 	}
 
 	@Override
@@ -71,7 +72,7 @@ public class ConnectorUDP implements Connector {
 	}
 
 	@Override
-	public void startServer(int port) {
+	public Connection startServer(int port) {
 		try {
 			ss = new DatagramSocket(port);
 			clients = new ArrayList<DatagramSocket>();
@@ -79,6 +80,7 @@ public class ConnectorUDP implements Connector {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		return this;
 	}
 
 	@Override

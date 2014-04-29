@@ -1,6 +1,7 @@
 package test;
 
 import factory.ConnectorFactory;
+import interfaces.Connection;
 import interfaces.Connector;
 
 import java.util.HashMap;
@@ -12,14 +13,14 @@ public class Server {
 		try {
 			HashMap<String, Object> j = new HashMap<String, Object>();
 			server = ConnectorFactory.getConnector(ConnectorFactory.TCP);
-			server.startServer(10080);
+			Connection connection = server.startServer(10080);
 			int countConnection = 0;
-			while(countConnection < 3){
-				String ip = server.acceptClient();
+			while(countConnection < 1){
+				String ip = connection.acceptClient();
 				countConnection++;
-				String msg = server.receive(ip);
+				String msg = connection.receive(ip);
 				j.put(ip+" - conn-"+countConnection, msg);
-				server.send("recebi as suas coordenadas, player-"+countConnection+".", ip);
+				connection.send("recebi as suas coordenadas, player-"+countConnection+".", ip);
 			}
 			for (Entry<String,Object> entry : j.entrySet()) {
 				System.out.println("Key: "+entry.getKey());

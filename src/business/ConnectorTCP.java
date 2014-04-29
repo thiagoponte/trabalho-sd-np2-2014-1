@@ -1,5 +1,6 @@
 package business;
 
+import interfaces.Connection;
 import interfaces.Connector;
 
 import java.io.BufferedReader;
@@ -12,7 +13,7 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.HashMap;
 
-public class ConnectorTCP implements Connector {
+public class ConnectorTCP implements Connector, Connection {
 	private Socket s = null;
 	private BufferedWriter os = null;
 	private BufferedReader br = null;
@@ -21,7 +22,7 @@ public class ConnectorTCP implements Connector {
 	HashMap<String, Socket> clients;
 
 	@Override
-	public void connect(String ip, int port) {
+	public Connection connect(String ip, int port) {
 		// TODO Auto-generated method stub
 		try {
 			s = new Socket(ip, port);
@@ -30,6 +31,7 @@ public class ConnectorTCP implements Connector {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		return this;
 	}
 
 	@Override
@@ -86,9 +88,10 @@ public class ConnectorTCP implements Connector {
 	}
 
 	@Override
-	public void startServer(int port) throws IOException {
+	public Connection startServer(int port) throws IOException {
 		ss = new ServerSocket(port);
 		clients = new HashMap<String, Socket>();
+		return this;
 	}
 
 	@Override
