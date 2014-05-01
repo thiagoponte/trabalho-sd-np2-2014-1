@@ -1,6 +1,7 @@
 package test;
 
 import factory.ConnectorFactory;
+import interfaces.Conn;
 import interfaces.Connection;
 import interfaces.Connector;
 
@@ -12,19 +13,19 @@ public class Server {
 		Connector server;
 		try {
 			HashMap<String, Object> j = new HashMap<String, Object>();
-			server = ConnectorFactory.getConnector(ConnectorFactory.TCP);
+			server = ConnectorFactory.getConnector(ConnectorFactory.UDP);
 			Connection connection = server.startServer(10080);
 			int countConnection = 0;
-			while(countConnection < 4){
-				String ip = connection.acceptClient();
+			while (countConnection < 4) {
+				Conn c = connection.acceptClient();
 				countConnection++;
-				String msg = connection.receive(ip);
-				j.put(ip+" - conn-"+countConnection, msg);
-				connection.send("recebi as suas coordenadas, player-"+countConnection+".", ip);
+				String msg = connection.receive(c.getIp().getHostName());
+				j.put(c.getIp() + " - conn-" + countConnection, msg);
+				connection.send("recebi as suas coordenadas, player-" + countConnection + ".", c.getIp().getHostName(), c.getPort());
 			}
-			for (Entry<String,Object> entry : j.entrySet()) {
-				System.out.println("Key: "+entry.getKey());
-				System.out.println("Value: "+entry.getValue());
+			for (Entry<String, Object> entry : j.entrySet()) {
+				System.out.println("Key: " + entry.getKey());
+				System.out.println("Value: " + entry.getValue());
 				System.out.println("-------------------------");
 			}
 		} catch (Exception e) {

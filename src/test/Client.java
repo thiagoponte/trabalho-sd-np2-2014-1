@@ -10,10 +10,10 @@ public class Client {
 	public static void main(String[] args) {
 		try {
 			String ip = "localhost";
-			Connector client = ConnectorFactory.getConnector(ConnectorFactory.TCP);
+			Connector client = ConnectorFactory.getConnector(ConnectorFactory.UDP);
 			Connection connection = client.connect(ip, 10080);
 			Random gerador = new Random();
-			connection.send("coordenadas "+gerador.nextInt(), ip);
+			connection.send("coordenadas "+gerador.nextInt(), ip, 10080);
 			String resposta = connection.receive(ip);
 			System.out.println(resposta);
 			connection.close();

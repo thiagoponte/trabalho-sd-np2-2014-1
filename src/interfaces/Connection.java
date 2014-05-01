@@ -9,7 +9,7 @@ public interface Connection {
 	 * @param ip: endereço IP da origem
 	 * @return
 	 */
-	public String send(String message, String ip);
+	public String send(String message, String ip, int port);
 	
 	/**
 	 * Espera uma resposta do servidor e geralmente é usado após o send.
@@ -22,7 +22,7 @@ public interface Connection {
 	 * @return O endereço de IP da origem.
 	 * @throws IOException
 	 */
-	public String acceptClient() throws IOException;
+	public Conn acceptClient() throws IOException;
 	
 	/**
 	 * Encerra a conexão.

@@ -8,6 +8,7 @@ import java.net.InetSocketAddress;
 import java.net.SocketException;
 import java.util.ArrayList;
 
+import interfaces.Conn;
 import interfaces.Connection;
 import interfaces.Connector;
 
@@ -22,7 +23,9 @@ public class ConnectorUDP implements Connector, Connection {
 		// TODO Auto-generated method stub
 		try {
 			ds = new DatagramSocket();
-			ds.connect(new InetSocketAddress(InetAddress.getLocalHost(), port));
+			ds.connect(new InetSocketAddress(ip, port));
+			// Envia uma mensagem para o servidor aceitá-la
+			send("Connect", ip, port);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -30,12 +33,17 @@ public class ConnectorUDP implements Connector, Connection {
 	}
 
 	@Override
-	public String send(String message, String ip) {
+	public String send(String message, String ip, int port) {
 		String retorno = "S";
 		DatagramPacket pacote;
 		try {
-			pacote = new DatagramPacket(message.getBytes(), message.length(), ds.getInetAddress(), ds.getPort());
-			ds.send(pacote);
+			if (ds != null) {
+				pacote = new DatagramPacket(message.getBytes(), message.length(), ds.getInetAddress(), ds.getPort());
+				ds.send(pacote);
+			} else {
+				pacote = new DatagramPacket(message.getBytes(), message.length(), InetAddress.getByName(ip), port);
+				ss.send(pacote);
+			}
 		} catch (IOException e) {
 			e.printStackTrace();
 			retorno = "N";
@@ -84,8 +92,8 @@ public class ConnectorUDP implements Connector, Connection {
 	}
 
 	@Override
-	public String acceptClient() throws IOException {
-		// accept bloqueia enquanto nï¿½o receber uma conexï¿½o
+	public Conn acceptClient() throws IOException {
+		// accept bloqueia enquanto não receber uma conexão
 
 		byte[] buffer = new byte[1000];
 		DatagramSocket c = new DatagramSocket();
@@ -102,7 +110,10 @@ public class ConnectorUDP implements Connector, Connection {
 			e.printStackTrace();
 		}
 
-		return c.getLocalAddress().getHostAddress();
+		//retorna IP e porta da conexão
+		Conn cn = new Conn(pacote.getAddress(), pacote.getPort());
+
+		return cn;
 
 	}
 

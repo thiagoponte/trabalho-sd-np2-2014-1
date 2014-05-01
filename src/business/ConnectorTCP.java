@@ -1,5 +1,6 @@
 package business;
 
+import interfaces.Conn;
 import interfaces.Connection;
 import interfaces.Connector;
 
@@ -35,17 +36,17 @@ public class ConnectorTCP implements Connector, Connection {
 	}
 
 	@Override
-	public String send(String message, String ip) {
+	public String send(String message, String ip, int port) {
 		String retorno = "N";
 		try {
-			if(ss == null){
+			if (ss == null) {
 				os = new BufferedWriter(new OutputStreamWriter(s.getOutputStream()));
 				ip = s.getLocalAddress().getHostAddress();
 				System.out.println(ip);
-			}else{
+			} else {
 				os = new BufferedWriter(new OutputStreamWriter(clients.get(ip).getOutputStream()));
 			}
-			os.write(ip+"|"+message+"\n");
+			os.write(ip + "|" + message + "\n");
 			os.flush();
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -57,9 +58,9 @@ public class ConnectorTCP implements Connector, Connection {
 	public String receive(String ip) {
 		String str = "";
 		try {
-			if(ss == null){
+			if (ss == null) {
 				br = new BufferedReader(new InputStreamReader(s.getInputStream()));
-			}else{
+			} else {
 				br = new BufferedReader(new InputStreamReader(clients.get(ip).getInputStream()));
 			}
 			str = br.readLine();
@@ -95,10 +96,11 @@ public class ConnectorTCP implements Connector, Connection {
 	}
 
 	@Override
-	public String acceptClient() throws IOException {
+	public Conn acceptClient() throws IOException {
 		client = ss.accept();
+		Conn c = new Conn(client.getInetAddress(), client.getPort());
 		clients.put(client.getInetAddress().getHostAddress(), client);
-		return client.getInetAddress().getHostAddress();
+		return c;
 	}
 
 }
