@@ -1,5 +1,7 @@
 package test;
 
+import java.util.Random;
+
 import factory.ConnectorFactory;
 import interfaces.Connection;
 import interfaces.Connector;
@@ -10,7 +12,8 @@ public class Client {
 			String ip = "localhost";
 			Connector client = ConnectorFactory.getConnector(ConnectorFactory.TCP);
 			Connection connection = client.connect(ip, 10080);
-			connection.send("coordenadas xy", ip);
+			Random gerador = new Random();
+			connection.send("coordenadas "+gerador.nextInt(), ip);
 			String resposta = connection.receive(ip);
 			System.out.println(resposta);
 			connection.close();

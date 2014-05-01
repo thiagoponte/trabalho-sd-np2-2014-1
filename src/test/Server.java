@@ -15,7 +15,7 @@ public class Server {
 			server = ConnectorFactory.getConnector(ConnectorFactory.TCP);
 			Connection connection = server.startServer(10080);
 			int countConnection = 0;
-			while(countConnection < 1){
+			while(countConnection < 4){
 				String ip = connection.acceptClient();
 				countConnection++;
 				String msg = connection.receive(ip);
