@@ -20,7 +20,7 @@ public class Server {
 				Conn c = connection.acceptClient();
 				countConnection++;
 				String msg = connection.receive(c.getIp().getHostName());
-				j.put(c.getIp() + " - conn-" + countConnection, msg);
+				j.put(c.getIp().getHostName() + " - conn-" + countConnection, msg);
 				connection.send("recebi as suas coordenadas, player-" + countConnection + ".", c.getIp().getHostName(), c.getPort());
 			}
 			for (Entry<String, Object> entry : j.entrySet()) {

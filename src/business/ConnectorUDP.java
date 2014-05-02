@@ -98,19 +98,12 @@ public class ConnectorUDP implements Connector, Connection {
 		byte[] buffer = new byte[1000];
 		DatagramSocket c = new DatagramSocket();
 		DatagramPacket pacote = new DatagramPacket(buffer, buffer.length);
-		try {
-			if (ss != null) {
-				ss.receive(pacote);
-			}
 
-			c.connect(pacote.getAddress(), pacote.getPort());
-			clients.add(c);
+		ss.receive(pacote);
+		c.connect(pacote.getAddress(), pacote.getPort());
+		clients.add(c);
 
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-
-		//retorna IP e porta da conexão
+		// retorna IP e porta da conexão
 		Conn cn = new Conn(pacote.getAddress(), pacote.getPort());
 
 		return cn;
