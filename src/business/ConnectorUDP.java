@@ -109,8 +109,11 @@ public class ConnectorUDP implements Connector, Connection {
 		// retorna IP e porta da conexão
 		setIp(pacote.getAddress());
 		setPort(pacote.getPort());
-
-		return this;
+		ConnectorUDP cUDP = new ConnectorUDP();
+		cUDP.ss = ss;
+		cUDP.setIp(pacote.getAddress());
+		cUDP.setPort(pacote.getPort());
+		return cUDP;
 
 	}
 

@@ -114,10 +114,16 @@ public class ConnectorTCP implements Connector, Connection {
 
 	@Override
 	public Connection acceptClient() throws IOException {
+		ConnectorTCP c = new ConnectorTCP();
 		client = ss.accept();
+		c.client = client;
+		c.setIp(client.getInetAddress());
+		c.setPort(client.getPort());
+		c.s = s;
+		c.ss = ss;
 		setIp(client.getInetAddress());
 		setPort(client.getPort());
-		return this;
+		return c;
 	}
 
 }
