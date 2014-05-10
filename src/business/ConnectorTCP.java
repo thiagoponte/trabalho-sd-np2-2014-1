@@ -1,6 +1,5 @@
 package business;
 
-import interfaces.Conn;
 import interfaces.Connection;
 import interfaces.Connector;
 
@@ -9,10 +8,10 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.UnknownHostException;
-import java.util.HashMap;
 
 public class ConnectorTCP implements Connector, Connection {
 	private Socket s = null;
@@ -20,13 +19,32 @@ public class ConnectorTCP implements Connector, Connection {
 	private BufferedReader br = null;
 	private ServerSocket ss = null;
 	private Socket client = null;
-	HashMap<String, Socket> clients;
+	private InetAddress ip;
+	private int port;
 
+	public InetAddress getIp() {
+		return ip;
+	}
+
+	public int getPort() {
+		return port;
+	}
+
+	public void setIp(InetAddress ip) {
+		this.ip = ip;
+	}
+
+	public void setPort(int port) {
+		this.port = port;
+	}
+	
 	@Override
 	public Connection connect(String ip, int port) {
 		// TODO Auto-generated method stub
 		try {
 			s = new Socket(ip, port);
+			setIp(InetAddress.getByName(ip));
+			setPort(port);
 		} catch (UnknownHostException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
@@ -36,17 +54,16 @@ public class ConnectorTCP implements Connector, Connection {
 	}
 
 	@Override
-	public String send(String message, String ip, int port) {
+	public String send(String message) {
 		String retorno = "N";
 		try {
 			if (ss == null) {
 				os = new BufferedWriter(new OutputStreamWriter(s.getOutputStream()));
-				ip = s.getLocalAddress().getHostAddress();
-				System.out.println(ip);
 			} else {
-				os = new BufferedWriter(new OutputStreamWriter(clients.get(ip).getOutputStream()));
+				os = new BufferedWriter(new OutputStreamWriter(client.getOutputStream()));
 			}
-			os.write(ip + "|" + message + "\n");
+			os.write(ip.getHostAddress() + "|" + message + "\n");
+			retorno = "S";
 			os.flush();
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -55,13 +72,13 @@ public class ConnectorTCP implements Connector, Connection {
 	}
 
 	@Override
-	public String receive(String ip) {
+	public String receive() {
 		String str = "";
 		try {
 			if (ss == null) {
 				br = new BufferedReader(new InputStreamReader(s.getInputStream()));
 			} else {
-				br = new BufferedReader(new InputStreamReader(clients.get(ip).getInputStream()));
+				br = new BufferedReader(new InputStreamReader(client.getInputStream()));
 			}
 			str = br.readLine();
 		} catch (IOException e) {
@@ -91,16 +108,16 @@ public class ConnectorTCP implements Connector, Connection {
 	@Override
 	public Connection startServer(int port) throws IOException {
 		ss = new ServerSocket(port);
-		clients = new HashMap<String, Socket>();
+		
 		return this;
 	}
 
 	@Override
-	public Conn acceptClient() throws IOException {
+	public Connection acceptClient() throws IOException {
 		client = ss.accept();
-		Conn c = new Conn(client.getInetAddress(), client.getPort());
-		clients.put(client.getInetAddress().getHostAddress(), client);
-		return c;
+		setIp(client.getInetAddress());
+		setPort(client.getPort());
+		return this;
 	}
 
 }

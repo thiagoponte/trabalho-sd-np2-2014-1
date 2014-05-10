@@ -1,7 +1,6 @@
 package test;
 
 import factory.ConnectorFactory;
-import interfaces.Conn;
 import interfaces.Connection;
 import interfaces.Connector;
 
@@ -13,15 +12,17 @@ public class Server {
 		Connector server;
 		try {
 			HashMap<String, Object> j = new HashMap<String, Object>();
-			server = ConnectorFactory.getConnector(ConnectorFactory.UDP);
+			server = ConnectorFactory.getConnector(ConnectorFactory.TCP);
 			Connection connection = server.startServer(10080);
 			int countConnection = 0;
-			while (countConnection < 4) {
-				Conn c = connection.acceptClient();
+			while (countConnection < 1) {
+				Connection c = connection.acceptClient();
 				countConnection++;
-				String msg = connection.receive(c.getIp().getHostName());
-				j.put(c.getIp().getHostName() + " - conn-" + countConnection, msg);
-				connection.send("recebi as suas coordenadas, player-" + countConnection + ".", c.getIp().getHostName(), c.getPort());
+				String msg = connection.receive();
+				j.put(c.getIp().getHostAddress(), c);
+				connection.send("recebi as suas coordenadas, player-" + countConnection + ".");
+				System.out.println(c.getIp().getHostAddress());
+				System.out.println("Jogada do player-"+countConnection+": "+msg);
 			}
 			for (Entry<String, Object> entry : j.entrySet()) {
 				System.out.println("Key: " + entry.getKey());

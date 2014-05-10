@@ -1,6 +1,7 @@
 package interfaces;
 
 import java.io.IOException;
+import java.net.InetAddress;
 
 public interface Connection {
 	/**
@@ -9,23 +10,27 @@ public interface Connection {
 	 * @param ip: endereço IP da origem
 	 * @return
 	 */
-	public String send(String message, String ip, int port);
+	public String send(String message);
 	
 	/**
 	 * Espera uma resposta do servidor e geralmente é usado após o send.
 	 * @return A mensagem recebida
 	 */
-	public String receive(String ip);
+	public String receive();
 	
 	/**
 	 * Aceita uma conexão do lado do servidor e deve ser usado após o método startServer
 	 * @return O endereço de IP da origem.
 	 * @throws IOException
 	 */
-	public Conn acceptClient() throws IOException;
+	public Connection acceptClient() throws IOException;
 	
 	/**
 	 * Encerra a conexão.
 	 */
 	public void close();
+
+	public InetAddress getIp();
+
+	public int getPort();
 }

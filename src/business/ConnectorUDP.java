@@ -1,5 +1,8 @@
 package business;
 
+import interfaces.Connection;
+import interfaces.Connector;
+
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
@@ -8,15 +11,13 @@ import java.net.InetSocketAddress;
 import java.net.SocketException;
 import java.util.ArrayList;
 
-import interfaces.Conn;
-import interfaces.Connection;
-import interfaces.Connector;
-
 public class ConnectorUDP implements Connector, Connection {
 
 	private DatagramSocket ds = null;
 	private DatagramSocket ss = null;
 	private ArrayList<DatagramSocket> clients = null;
+	private InetAddress ip;
+	private int port;
 
 	@Override
 	public Connection connect(String ip, int port) {
@@ -24,8 +25,10 @@ public class ConnectorUDP implements Connector, Connection {
 		try {
 			ds = new DatagramSocket();
 			ds.connect(new InetSocketAddress(ip, port));
+			setIp(InetAddress.getByName(ip));
+			setPort(port);
 			// Envia uma mensagem para o servidor aceitá-la
-			send("Connect", ip, port);
+			send("Connect");
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -33,7 +36,7 @@ public class ConnectorUDP implements Connector, Connection {
 	}
 
 	@Override
-	public String send(String message, String ip, int port) {
+	public String send(String message) {
 		String retorno = "S";
 		DatagramPacket pacote;
 		try {
@@ -41,7 +44,7 @@ public class ConnectorUDP implements Connector, Connection {
 				pacote = new DatagramPacket(message.getBytes(), message.length(), ds.getInetAddress(), ds.getPort());
 				ds.send(pacote);
 			} else {
-				pacote = new DatagramPacket(message.getBytes(), message.length(), InetAddress.getByName(ip), port);
+				pacote = new DatagramPacket(message.getBytes(), message.length(), getIp(), getPort());
 				ss.send(pacote);
 			}
 		} catch (IOException e) {
@@ -52,7 +55,7 @@ public class ConnectorUDP implements Connector, Connection {
 	}
 
 	@Override
-	public String receive(String ip) {
+	public String receive() {
 
 		String str = "";
 
@@ -92,7 +95,7 @@ public class ConnectorUDP implements Connector, Connection {
 	}
 
 	@Override
-	public Conn acceptClient() throws IOException {
+	public Connection acceptClient() throws IOException {
 		// accept bloqueia enquanto não receber uma conexão
 
 		byte[] buffer = new byte[1000];
@@ -104,10 +107,30 @@ public class ConnectorUDP implements Connector, Connection {
 		clients.add(c);
 
 		// retorna IP e porta da conexão
-		Conn cn = new Conn(pacote.getAddress(), pacote.getPort());
+		setIp(pacote.getAddress());
+		setPort(pacote.getPort());
 
-		return cn;
+		return this;
 
+	}
+
+	private void setPort(int port) {
+		this.port = port;
+		
+	}
+
+	private void setIp(InetAddress address) {
+		this.ip = address;
+	}
+
+	@Override
+	public InetAddress getIp() {
+		return ip;
+	}
+
+	@Override
+	public int getPort() {
+		return port;
 	}
 
 }
