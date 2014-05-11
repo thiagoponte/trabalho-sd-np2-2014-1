@@ -43,8 +43,8 @@ public class Server {
 		for (int i = 0; i < 3; i++) {
 			Random r = new Random();
 			Random r1 = new Random();
-			int x = r.nextInt(9);
-			int y = r1.nextInt(9);
+			int x = r.nextInt(5);
+			int y = r1.nextInt(5);
 			do{
 				int x1= x+1;
 				int y1= y+1;
@@ -59,8 +59,8 @@ public class Server {
 				}else{
 					r = new Random();
 					r1 = new Random();
-					x = r.nextInt(10);
-					y = r1.nextInt(10);
+					x = r.nextInt(5);
+					y = r1.nextInt(5);
 				}
 			}while(!mapa.containsKey(""+x+""+y));
 		}
@@ -71,8 +71,8 @@ public class Server {
 		for (int i = 0; i < 5; i++) {
 			Random r = new Random();
 			Random r1 = new Random();
-			int x = r.nextInt(9);
-			int y = r1.nextInt(9);
+			int x = r.nextInt(5);
+			int y = r1.nextInt(5);
 			mapa.put(""+x+""+y, Constantes.Posicao.BARCO.getTipo());
 		}
 		
