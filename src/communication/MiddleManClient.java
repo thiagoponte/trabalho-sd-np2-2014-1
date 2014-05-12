@@ -1,12 +1,10 @@
 package communication;
 
-import java.util.LinkedHashMap;
-
-import business.Constantes;
-
 import factory.ConnectorFactory;
 import interfaces.Connection;
 import interfaces.Connector;
+
+import java.util.LinkedHashMap;
 
 public class MiddleManClient {
 	private Connection connection;
@@ -25,7 +23,9 @@ public class MiddleManClient {
 		String [] coordenadas = msg.split(",");
 		LinkedHashMap<String, Integer> mapa = new LinkedHashMap<String, Integer>();
 		for (int i = 0; i < coordenadas.length; i++) {
-			mapa.put(coordenadas[i], Constantes.Posicao.BARCO.getTipo());
+			String xy = coordenadas[i].split("\\|")[0];
+			String barco = coordenadas[i].split("\\|")[1];
+			mapa.put(xy, Integer.parseInt(barco));
 		}
 		return mapa;
 	}

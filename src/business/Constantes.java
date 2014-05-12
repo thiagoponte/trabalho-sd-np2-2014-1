@@ -2,7 +2,7 @@ package business;
 
 public class Constantes {
 	public static enum Posicao{
-		BARCO(1), AGUA(2);
+		BARCO_1(1), BARCO_2(2);
 		
 		private int tipo;
 		

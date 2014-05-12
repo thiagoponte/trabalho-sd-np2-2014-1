@@ -57,7 +57,7 @@ public class MiddleManServer {
 	private String parseMap(HashMap<String, Integer> mapa) {
 		String s = "";
 		for (Entry<String, Integer> entry : mapa.entrySet()) {
-			s += entry.getKey() + ",";
+			s += entry.getKey() + "|" +entry.getValue()+ ",";
 		}
 		return s;
 	}

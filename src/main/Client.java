@@ -11,6 +11,8 @@ import javax.swing.JPanel;
 import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
 
+import business.Constantes;
+
 import communication.MiddleManClient;
 
 public class Client{
@@ -50,7 +52,11 @@ public class Client{
 			for (int j = 0; j < 6; j++) {
 				Color color = Color.CYAN;
 				if(coordenadas.containsKey(""+i+""+j)){
-					color = Color.BLACK;
+					if(coordenadas.get(""+i+""+j).equals(Constantes.Posicao.BARCO_1.getTipo())){
+						color = Color.BLACK;
+					}else if(coordenadas.get(""+i+""+j).equals(Constantes.Posicao.BARCO_2.getTipo())){
+						color = Color.ORANGE;
+					}
 				}
 				JPanel panel = new JPanel();
 				panel.setBounds(0, 0, 50, 50);

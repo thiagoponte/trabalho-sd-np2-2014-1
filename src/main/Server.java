@@ -45,16 +45,22 @@ public class Server {
 			Random r1 = new Random();
 			int x = r.nextInt(5);
 			int y = r1.nextInt(5);
-			do{
+			while(mapa.containsKey(""+x+""+y)){
+				r = new Random();
+				r1 = new Random();
+				x = r.nextInt(5);
+				y = r1.nextInt(5);
+			}
+			while(!mapa.containsKey(""+x+""+y)){
 				int x1= x+1;
 				int y1= y+1;
 				if(!mapa.containsKey(""+x+""+y)){
 					if(!mapa.containsKey(""+x+""+y1)){
-						mapa.put(""+x+""+y, Constantes.Posicao.BARCO.getTipo());
-						mapa.put(""+x+""+y1, Constantes.Posicao.BARCO.getTipo());
+						mapa.put(""+x+""+y, Constantes.Posicao.BARCO_2.getTipo());
+						mapa.put(""+x+""+y1, Constantes.Posicao.BARCO_2.getTipo());
 					}else if(!mapa.containsKey(""+x1+""+y)){
-						mapa.put(""+x+""+y, Constantes.Posicao.BARCO.getTipo());
-						mapa.put(""+x1+""+y, Constantes.Posicao.BARCO.getTipo());
+						mapa.put(""+x+""+y, Constantes.Posicao.BARCO_2.getTipo());
+						mapa.put(""+x1+""+y, Constantes.Posicao.BARCO_2.getTipo());
 					}
 				}else{
 					r = new Random();
@@ -62,7 +68,7 @@ public class Server {
 					x = r.nextInt(5);
 					y = r1.nextInt(5);
 				}
-			}while(!mapa.containsKey(""+x+""+y));
+			}
 		}
 		
 	}
@@ -73,7 +79,13 @@ public class Server {
 			Random r1 = new Random();
 			int x = r.nextInt(5);
 			int y = r1.nextInt(5);
-			mapa.put(""+x+""+y, Constantes.Posicao.BARCO.getTipo());
+			while(mapa.containsKey(""+x+""+y)){
+				r = new Random();  
+				r1 = new Random(); 
+				x = r.nextInt(5);  
+				y = r1.nextInt(5); 
+			}
+			mapa.put(""+x+""+y, Constantes.Posicao.BARCO_1.getTipo());
 		}
 		
 	}
