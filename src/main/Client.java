@@ -27,6 +27,7 @@ public class Client{
 			coordenadas = mmc.receberCoordenadas();
 			montarJanelas();
 			frame.setVisible(true);
+			frame.setTitle("Batalha naval");
 		} catch(Exception e){
 			
 		}
@@ -50,7 +51,7 @@ public class Client{
 		
 		for (int i = 0; i < 6; i++) {
 			for (int j = 0; j < 6; j++) {
-				Color color = Color.CYAN;
+				Color color = Color.BLUE;
 				if(coordenadas.containsKey(""+i+""+j)){
 					if(coordenadas.get(""+i+""+j).equals(Constantes.Posicao.BARCO_1.getTipo())){
 						color = Color.BLACK;
@@ -61,14 +62,14 @@ public class Client{
 				JPanel panel = new JPanel();
 				panel.setBounds(0, 0, 50, 50);
 				panel.setBackground(color);
-				GridBagConstraints contrainst = new GridBagConstraints();
+				GridBagConstraints constraints = new GridBagConstraints();
 				Insets inset = new Insets(0, 0, 5, 0);
-				contrainst.gridx = i;
-				contrainst.gridy = j;
-				contrainst.ipadx = 45;
-				contrainst.ipady = 45;
-				contrainst.insets = inset;
-				leftPanel.add(panel, contrainst);
+				constraints.gridx = i;
+				constraints.gridy = j;
+				constraints.ipadx = 45;
+				constraints.ipady = 45;
+				constraints.insets = inset;
+				leftPanel.add(panel, constraints);
 				team1.put(""+i+""+j, panel);
 			}
 		}
@@ -89,14 +90,14 @@ public class Client{
 				JPanel panel = new JPanel();
 				panel.setBounds(0, 0, 50, 50);
 				panel.setBackground(Color.LIGHT_GRAY);
-				GridBagConstraints contrainst = new GridBagConstraints();
+				GridBagConstraints constraints = new GridBagConstraints();
 				Insets inset = new Insets(0, 0, 5, 0);
-				contrainst.gridx = i;
-				contrainst.gridy = j;
-				contrainst.ipadx = 45;
-				contrainst.ipady = 45;
-				contrainst.insets = inset;
-				rightPanel.add(panel, contrainst);
+				constraints.gridx = i;
+				constraints.gridy = j;
+				constraints.ipadx = 45;
+				constraints.ipady = 45;
+				constraints.insets = inset;
+				rightPanel.add(panel, constraints);
 				team2.put(""+i+""+j, panel);
 			}
 		}
