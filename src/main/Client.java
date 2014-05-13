@@ -4,10 +4,15 @@ import java.awt.Color;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.LinkedHashMap;
 
+import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JTextField;
 import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
 
@@ -15,16 +20,17 @@ import business.Constantes;
 
 import communication.MiddleManClient;
 
-public class Client{
+public class Client implements ActionListener{
 	private static JFrame frame;
 	private static LinkedHashMap<String, Integer> coordenadas;
 	private static LinkedHashMap<String, JPanel> team1 = new LinkedHashMap<String, JPanel>();
 	private static LinkedHashMap<String, JPanel> team2 = new LinkedHashMap<String, JPanel>();
+	private static JTextField ipAddr;
+	private static JPanel leftPanel;
+	private static JPanel rightPanel;
+	private static JButton btnConnect;
 	public static void main(String[] args) {
 		try{
-			MiddleManClient mmc = new MiddleManClient();
-			mmc.conectar("localhost");
-			coordenadas = mmc.receberCoordenadas();
 			montarJanelas();
 			frame.setVisible(true);
 			frame.setTitle("Batalha naval");
@@ -32,23 +38,12 @@ public class Client{
 			
 		}
 	}
-
-	private static void montarJanelas() {
-		frame = new JFrame();
-		frame.setBounds(100, 100, 882, 430);
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.getContentPane().setLayout(null);
-		
-		JPanel leftPanel = new JPanel();
-		leftPanel.setBorder(new TitledBorder(new LineBorder(new Color(184, 207, 229)), "Time Amigo", TitledBorder.LEADING, TitledBorder.TOP, null, null));
-		leftPanel.setBounds(12, 12, 401, 322);
-		GridBagLayout gbl_leftPanel = new GridBagLayout();
-		gbl_leftPanel.columnWidths = new int[]{5, 5, 5, 5, 5, 5};
-		gbl_leftPanel.rowHeights = new int[]{5, 5, 5, 5, 5, 5};
-		gbl_leftPanel.columnWeights = new double[]{5.0, 5.0, 5.0, 5.0, 5.0, 5.0, Double.MIN_VALUE};
-		gbl_leftPanel.rowWeights = new double[]{5.0, 5.0, 5.0, 5.0, 5.0, 5.0, Double.MIN_VALUE};
-		leftPanel.setLayout(gbl_leftPanel);
-		
+	
+	private void conectar(){
+		MiddleManClient mmc = new MiddleManClient();
+		String ip = ipAddr.getText();
+		mmc.conectar(ip);
+		coordenadas = mmc.receberCoordenadas();
 		for (int i = 0; i < 6; i++) {
 			for (int j = 0; j < 6; j++) {
 				Color color = Color.BLUE;
@@ -73,17 +68,6 @@ public class Client{
 				team1.put(""+i+""+j, panel);
 			}
 		}
-		frame.getContentPane().add(leftPanel);
-		
-		JPanel rightPanel = new JPanel();
-		rightPanel.setBorder(new TitledBorder(new LineBorder(new Color(184, 207, 229)), "Time Inimigo", TitledBorder.LEADING, TitledBorder.TOP, null, null));
-		rightPanel.setBounds(425, 12, 401, 322);
-		GridBagLayout gbl_rightPanel = new GridBagLayout();
-		gbl_rightPanel.columnWidths = new int[]{5, 5, 5, 5, 5, 5};                                  
-		gbl_rightPanel.rowHeights = new int[]{5, 5, 5, 5, 5, 5};                                    
-		gbl_rightPanel.columnWeights = new double[]{5.0, 5.0, 5.0, 5.0, 5.0, 5.0, Double.MIN_VALUE};
-		gbl_rightPanel.rowWeights = new double[]{5.0, 5.0, 5.0, 5.0, 5.0, 5.0, Double.MIN_VALUE};   
-		rightPanel.setLayout(gbl_rightPanel);
 		
 		for (int i = 0; i < 6; i++) {
 			for (int j = 0; j < 6; j++) {
@@ -101,6 +85,66 @@ public class Client{
 				team2.put(""+i+""+j, panel);
 			}
 		}
+		
+		frame.getContentPane().repaint();
+	}
+	
+	private static void montarJanelas() {
+		frame = new JFrame();
+		frame.setBounds(100, 100, 882, 430);
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.getContentPane().setLayout(null);
+		
+		leftPanel = new JPanel();
+		leftPanel.setBorder(new TitledBorder(new LineBorder(new Color(184, 207, 229)), "Time Amigo", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+		leftPanel.setBounds(12, 12, 401, 322);
+		GridBagLayout gbl_leftPanel = new GridBagLayout();
+		gbl_leftPanel.columnWidths = new int[]{5, 5, 5, 5, 5, 5};
+		gbl_leftPanel.rowHeights = new int[]{5, 5, 5, 5, 5, 5};
+		gbl_leftPanel.columnWeights = new double[]{5.0, 5.0, 5.0, 5.0, 5.0, 5.0, Double.MIN_VALUE};
+		gbl_leftPanel.rowWeights = new double[]{5.0, 5.0, 5.0, 5.0, 5.0, 5.0, Double.MIN_VALUE};
+		leftPanel.setLayout(gbl_leftPanel);
+		
+		
+		frame.getContentPane().add(leftPanel);
+		
+		rightPanel = new JPanel();
+		rightPanel.setBorder(new TitledBorder(new LineBorder(new Color(184, 207, 229)), "Time Inimigo", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+		rightPanel.setBounds(425, 12, 401, 322);
+		GridBagLayout gbl_rightPanel = new GridBagLayout();
+		gbl_rightPanel.columnWidths = new int[]{5, 5, 5, 5, 5, 5};                                  
+		gbl_rightPanel.rowHeights = new int[]{5, 5, 5, 5, 5, 5};                                    
+		gbl_rightPanel.columnWeights = new double[]{5.0, 5.0, 5.0, 5.0, 5.0, 5.0, Double.MIN_VALUE};
+		gbl_rightPanel.rowWeights = new double[]{5.0, 5.0, 5.0, 5.0, 5.0, 5.0, Double.MIN_VALUE};   
+		rightPanel.setLayout(gbl_rightPanel);
+		
+		
 		frame.getContentPane().add(rightPanel);
+		
+		ipAddr = new JTextField();
+		ipAddr.setBounds(153, 346, 90, 19);
+		frame.getContentPane().add(ipAddr);
+		ipAddr.setColumns(20);
+		ipAddr.setText("localhost");
+		
+		JLabel lblIp = new JLabel("IP Servidor: ");
+		lblIp.setBounds(22, 346, 117, 15);
+		frame.getContentPane().add(lblIp);
+		
+		btnConnect = new JButton("Connectar");
+		btnConnect.setBounds(153, 366, 117, 25);
+		btnConnect.addActionListener(new Client());
+		btnConnect.setActionCommand("conectar");
+		frame.getContentPane().add(btnConnect);
+	}
+
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		if(e.getActionCommand().equalsIgnoreCase("conectar")){
+			conectar();
+			btnConnect.setActionCommand("");
+			ipAddr.setEditable(false);
+		}
+		
 	}
 }
