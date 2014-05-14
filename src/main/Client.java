@@ -117,7 +117,7 @@ public class Client implements ActionListener, MouseListener{
 	
 	private static void montarJanelas() {
 		frame = new JFrame();
-		frame.setBounds(100, 100, 882, 430);
+		frame.setBounds(100, 100, 882, 440);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setLayout(null);
 		
@@ -157,7 +157,7 @@ public class Client implements ActionListener, MouseListener{
 		lblIp.setBounds(22, 346, 117, 15);
 		frame.getContentPane().add(lblIp);
 		
-		btnConnect = new JButton("Connectar");
+		btnConnect = new JButton("Conectar");
 		btnConnect.setBounds(153, 366, 117, 25);
 		btnConnect.addActionListener(new Client());
 		btnConnect.setActionCommand("conectar");
@@ -187,6 +187,7 @@ public class Client implements ActionListener, MouseListener{
 			cor = Color.RED;
 		}
 		panel.setBackground(cor);
+		updateUI();
 	}
 	@Override
 	public void mouseEntered(MouseEvent arg0) {
