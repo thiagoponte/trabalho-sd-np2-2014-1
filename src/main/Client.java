@@ -6,13 +6,12 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.util.LinkedHashMap;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.border.LineBorder;
@@ -22,7 +21,7 @@ import business.Constantes;
 
 import communication.MiddleManClient;
 
-public class Client implements ActionListener, MouseListener{
+public class Client implements ActionListener{
 	private static JFrame frame;
 	private static LinkedHashMap<String, Integer> coordenadas;
 	private static LinkedHashMap<String, JPanel> team1 = new LinkedHashMap<String, JPanel>();
@@ -33,26 +32,14 @@ public class Client implements ActionListener, MouseListener{
 	private static JButton btnConnect;
 	private static MiddleManClient mmc;
 	private static int id;
+	private static String jogadas = "";
+	private boolean finished = false;
+	
 	public static void main(String[] args) {
 		try{
 			montarJanelas();
 			frame.setVisible(true);
 			frame.setTitle("Batalha naval");
-			boolean finished = false;
-			while(!finished){
-				String comando = mmc.recebe();
-				switch(comando.split("\\|")[0]){
-				case "play":
-					
-					break;
-				case "S":
-				case "N":
-					if(comando.split("\\|")[0].equalsIgnoreCase("S")){
-						
-					}
-					break;
-				}
-			}
 		} catch(Exception e){
 			
 		}
@@ -78,8 +65,8 @@ public class Client implements ActionListener, MouseListener{
 				panel.setBackground(color);
 				GridBagConstraints constraints = new GridBagConstraints();
 				Insets inset = new Insets(0, 0, 5, 0);
-				constraints.gridx = i;
-				constraints.gridy = j;
+				constraints.gridx = i+1;
+				constraints.gridy = j+1;
 				constraints.ipadx = 45;
 				constraints.ipady = 45;
 				constraints.insets = inset;
@@ -95,73 +82,192 @@ public class Client implements ActionListener, MouseListener{
 				panel.setBackground(Color.LIGHT_GRAY);
 				GridBagConstraints constraints = new GridBagConstraints();
 				Insets inset = new Insets(0, 0, 5, 0);
-				constraints.gridx = i;
-				constraints.gridy = j;
+				constraints.gridx = i+1;
+				constraints.gridy = j+1;
 				constraints.ipadx = 45;
 				constraints.ipady = 45;
 				constraints.insets = inset;
-				panel.addMouseListener(new Client());
-				panel.setToolTipText(""+i+""+j);
 				rightPanel.add(panel, constraints);
 				team2.put(""+i+""+j, panel);
 			}
 		}
+		new Thread(){
+			public void run(){
+				while(!finished){
+					try {
+						updateUI();
+						Thread.sleep(1000);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+				}
+			}
+		}.start();
+		new Thread(){
+
+			public void run() {
+				finished = false;
+				while(!finished){
+					String comando = mmc.recebe();
+					switch(comando.split("\\|")[0]){
+					case "play":
+						String coordenadas = "";
+						while(coordenadas.length() == 0){
+							coordenadas = JOptionPane.showInputDialog(frame, "Digite as coordenadas juntas (ex. XY), jogadas informadas anteiormente serão desconsideradas.:");
+							if(coordenadas == null){
+								coordenadas = "";
+							}else{
+								if(Integer.parseInt(coordenadas) > 55 || Integer.parseInt(coordenadas) < 0){
+									coordenadas = "";
+								}
+							}
+							if(coordenadas.length() > 0 && jogadas.indexOf(coordenadas) > -1){
+								coordenadas = "";
+							}
+						}
+						coordenadas = coordenadas.charAt(1)+""+coordenadas.charAt(0);
+						jogadas += coordenadas+",";
+						mmc.enviarCoordenadas(coordenadas, id);
+						break;
+					case "update":
+						Color mark = null;
+						if(comando.indexOf('S') > -1){
+							mark = Color.GREEN;
+						}else{
+							mark = Color.RED;
+						}
+						int team = Integer.parseInt(comando.split("\\|")[3]);
+						if(id % 2 != 0){
+							if(team % 2 != 0){
+								team2.get(comando.split("\\|")[2]).setBackground(mark);
+							}else{
+								team1.get(comando.split("\\|")[2]).setBackground(mark);
+							}
+						}else{
+							if(team % 2 != 0){
+								team1.get(comando.split("\\|")[2]).setBackground(mark);
+							}else{
+								team2.get(comando.split("\\|")[2]).setBackground(mark);
+							}
+						}
+						updateUI();
+						break;
+					case "fim":
+						System.out.println(comando.split("\\|")[1]);
+						JOptionPane.showMessageDialog(frame, comando.split("\\|")[1]);
+						finished = true;
+						break;
+					}
+				}
+			};
+		}.start();
 		
-		updateUI();
 	}
 
-	private void updateUI() {
+	private static void updateUI() {
 		frame.repaint(12, 12, 401, 322);
 		frame.revalidate();
 	}
 	
 	private static void montarJanelas() {
 		frame = new JFrame();
-		frame.setBounds(100, 100, 882, 440);
+		frame.setBounds(100, 100, 882, 460);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setLayout(null);
+		JPanel principal = new JPanel();
+		principal.setBounds(0, 0, 882, 460);
+		principal.setLayout(null);
 		
 		leftPanel = new JPanel();
 		leftPanel.setBorder(new TitledBorder(new LineBorder(new Color(184, 207, 229)), "Time Amigo", TitledBorder.LEADING, TitledBorder.TOP, null, null));
-		leftPanel.setBounds(12, 12, 401, 322);
+		leftPanel.setBounds(20, 25, 401, 322);
 		GridBagLayout gbl_leftPanel = new GridBagLayout();
-		gbl_leftPanel.columnWidths = new int[]{5, 5, 5, 5, 5, 5};
-		gbl_leftPanel.rowHeights = new int[]{5, 5, 5, 5, 5, 5};
-		gbl_leftPanel.columnWeights = new double[]{5.0, 5.0, 5.0, 5.0, 5.0, 5.0, Double.MIN_VALUE};
-		gbl_leftPanel.rowWeights = new double[]{5.0, 5.0, 5.0, 5.0, 5.0, 5.0, Double.MIN_VALUE};
+		gbl_leftPanel.columnWidths = new int[]{5, 5, 5, 5, 5, 5, 5};
+		gbl_leftPanel.rowHeights = new int[]{5, 5, 5, 5, 5, 5, 5};
+		gbl_leftPanel.columnWeights = new double[]{5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, Double.MIN_VALUE};
+		gbl_leftPanel.rowWeights = new double[]{5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, Double.MIN_VALUE};
 		leftPanel.setLayout(gbl_leftPanel);
 		
+		for (int i = 0; i < 6; i++) {
+			JLabel lbl = new JLabel(i+"");
+			lbl.setBounds(0, 0, 5, 5);
+			GridBagConstraints constraints = new GridBagConstraints();
+			Insets inset = new Insets(0, 0, 5, 0);
+			constraints.gridx = i+1;
+			constraints.gridy = 0;
+			constraints.ipadx = 45;
+			constraints.ipady = 45;
+			constraints.insets = inset;
+			leftPanel.add(lbl, constraints);
+			
+			
+			lbl = new JLabel(i+"");
+			lbl.setBounds(0, 0, 5, 5);
+			constraints = new GridBagConstraints();
+			inset = new Insets(0, 0, 5, 0);
+			constraints.gridx = 0;
+			constraints.gridy = i+1;
+			constraints.ipadx = 45;
+			constraints.ipady = 45;
+			constraints.insets = inset;
+			leftPanel.add(lbl, constraints);
+		}
 		
-		frame.getContentPane().add(leftPanel);
+		principal.add(leftPanel);
 		
 		rightPanel = new JPanel();
 		rightPanel.setBorder(new TitledBorder(new LineBorder(new Color(184, 207, 229)), "Time Inimigo", TitledBorder.LEADING, TitledBorder.TOP, null, null));
-		rightPanel.setBounds(425, 12, 401, 322);
+		rightPanel.setBounds(425, 25, 401, 322);
 		GridBagLayout gbl_rightPanel = new GridBagLayout();
-		gbl_rightPanel.columnWidths = new int[]{5, 5, 5, 5, 5, 5};                                  
-		gbl_rightPanel.rowHeights = new int[]{5, 5, 5, 5, 5, 5};                                    
-		gbl_rightPanel.columnWeights = new double[]{5.0, 5.0, 5.0, 5.0, 5.0, 5.0, Double.MIN_VALUE};
-		gbl_rightPanel.rowWeights = new double[]{5.0, 5.0, 5.0, 5.0, 5.0, 5.0, Double.MIN_VALUE};   
+		gbl_rightPanel.columnWidths = new int[]{5, 5, 5, 5, 5, 5, 5};
+		gbl_rightPanel.rowHeights = new int[]{5, 5, 5, 5, 5, 5, 5};                                    
+		gbl_rightPanel.columnWeights = new double[]{5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, Double.MIN_VALUE};
+		gbl_rightPanel.rowWeights = new double[]{5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, Double.MIN_VALUE};   
 		rightPanel.setLayout(gbl_rightPanel);
 		
+		for (int i = 0; i < 6; i++) {
+			JLabel lbl = new JLabel(i+"");
+			lbl.setBounds(0, 0, 5, 5);
+			GridBagConstraints constraints = new GridBagConstraints();
+			Insets inset = new Insets(0, 0, 5, 0);
+			constraints.gridx = i+1;
+			constraints.gridy = 0;
+			constraints.ipadx = 45;
+			constraints.ipady = 45;
+			constraints.insets = inset;
+			rightPanel.add(lbl, constraints);
+			
+			lbl = new JLabel(i+"");
+			lbl.setBounds(0, 0, 5, 5);
+			constraints = new GridBagConstraints();
+			inset = new Insets(0, 0, 5, 0);
+			constraints.gridx = 0;
+			constraints.gridy = i+1;
+			constraints.ipadx = 45;
+			constraints.ipady = 45;
+			constraints.insets = inset;
+			rightPanel.add(lbl, constraints);
+		}
 		
-		frame.getContentPane().add(rightPanel);
+		principal.add(rightPanel);
 		
 		ipAddr = new JTextField();
-		ipAddr.setBounds(153, 346, 90, 19);
-		frame.getContentPane().add(ipAddr);
+		ipAddr.setBounds(153, 355, 90, 19);
 		ipAddr.setColumns(20);
 		ipAddr.setText("localhost");
+		principal.add(ipAddr);
 		
 		JLabel lblIp = new JLabel("IP Servidor: ");
-		lblIp.setBounds(22, 346, 117, 15);
-		frame.getContentPane().add(lblIp);
+		lblIp.setBounds(22, 355, 117, 15);
+		principal.add(lblIp);
 		
 		btnConnect = new JButton("Conectar");
-		btnConnect.setBounds(153, 366, 117, 25);
+		btnConnect.setBounds(153, 378, 117, 25);
 		btnConnect.addActionListener(new Client());
 		btnConnect.setActionCommand("conectar");
-		frame.getContentPane().add(btnConnect);
+		principal.add(btnConnect);
+		
+		frame.getContentPane().add(principal);
 	}
 
 	@Override
@@ -174,31 +280,4 @@ public class Client implements ActionListener, MouseListener{
 		
 	}
 
-	@Override
-	public void mouseClicked(MouseEvent arg0) {
-		JPanel panel = ((JPanel)arg0.getSource());
-		panel.removeMouseListener(new Client());
-		String coordenada = panel.getToolTipText();
-		String resposta = mmc.enviarCoordenadas(coordenada, id);
-		Color cor = null;
-		if(resposta.equals("S")){
-			cor = Color.GREEN;
-		}else{
-			cor = Color.RED;
-		}
-		panel.setBackground(cor);
-		updateUI();
-	}
-	@Override
-	public void mouseEntered(MouseEvent arg0) {
-	}
-	@Override
-	public void mouseExited(MouseEvent arg0) {
-	}
-	@Override
-	public void mousePressed(MouseEvent arg0) {
-	}
-	@Override
-	public void mouseReleased(MouseEvent arg0) {
-	}
 }

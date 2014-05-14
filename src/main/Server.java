@@ -92,6 +92,17 @@ public class Server {
 					}else if(!mapa.containsKey(""+x0+""+y)){
 						mapa.put(""+x+""+y, Constantes.Posicao.BARCO_2.getTipo());
 						mapa.put(""+x0+""+y, Constantes.Posicao.BARCO_2.getTipo());
+					}else{
+						r = new Random();
+						r1 = new Random();
+						x = r.nextInt(5);
+						y = r1.nextInt(5);
+						while(mapa.containsKey(""+x+""+y)){
+							r = new Random();
+							r1 = new Random();
+							x = r.nextInt(5);
+							y = r1.nextInt(5);
+						}
 					}
 				}else{
 					r = new Random();
