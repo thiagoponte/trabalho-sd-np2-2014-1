@@ -11,7 +11,8 @@ import communication.MiddleManServer;
 
 public class Server {
 	public static void main(String[] args) {
-		MiddleManServer mms = new MiddleManServer();
+		int qtPlayer = 2;
+		MiddleManServer mms = new MiddleManServer(qtPlayer);
 		System.out.println("MAPA 1--------------------------------");
 		LinkedHashMap<String, Integer> mapa1 = gerarMapa();
 		System.out.println("MAPA 2--------------------------------");
@@ -31,7 +32,7 @@ public class Server {
 			if(!hit.equalsIgnoreCase("S")){
 				countPlayer++;
 			}
-			if(countPlayer > 2){
+			if(countPlayer > qtPlayer){
 				countPlayer = 1;
 			}
 			if(mapa1.size() == 0 || mapa2.size() == 0){

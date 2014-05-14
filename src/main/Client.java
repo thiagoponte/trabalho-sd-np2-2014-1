@@ -6,8 +6,13 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.util.LinkedHashMap;
 
+import javax.imageio.ImageIO;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -32,7 +37,6 @@ public class Client implements ActionListener{
 	private static JButton btnConnect;
 	private static MiddleManClient mmc;
 	private static int id;
-	private static String jogadas = "";
 	private boolean finished = false;
 	
 	public static void main(String[] args) {
@@ -62,13 +66,48 @@ public class Client implements ActionListener{
 				}
 				JPanel panel = new JPanel();
 				panel.setBounds(0, 0, 50, 50);
-				panel.setBackground(color);
+				if(color.equals(Color.BLUE)){
+					BufferedImage myPicture;
+					try {
+						myPicture = ImageIO.read(new File("src/img/agua.jpg"));
+						JLabel picLabel = new JLabel(new ImageIcon(myPicture));
+						picLabel.setBounds(0, 0, 46, 46);
+						panel.add(picLabel);
+					} catch (IOException e) {
+						panel.setBackground(color);
+						e.printStackTrace();
+					}
+				}else if(color.equals(Color.BLACK)){
+					BufferedImage myPicture;
+					try {
+						myPicture = ImageIO.read(new File("src/img/b1.png"));
+						JLabel picLabel = new JLabel(new ImageIcon(myPicture));
+						picLabel.setBounds(0, 0, 46, 46);
+						panel.add(picLabel);
+					} catch (IOException e) {
+						panel.setBackground(color);
+						e.printStackTrace();
+					}
+				}else if(color.equals(Color.ORANGE)){
+					BufferedImage myPicture;
+					try {
+						myPicture = ImageIO.read(new File("src/img/b2.png"));
+						JLabel picLabel = new JLabel(new ImageIcon(myPicture));
+						picLabel.setBounds(0, 0, 46, 45);
+						panel.add(picLabel);
+					} catch (IOException e) {
+						panel.setBackground(color);
+						e.printStackTrace();
+					}
+				}else{
+					panel.setBackground(color);
+				}
 				GridBagConstraints constraints = new GridBagConstraints();
 				Insets inset = new Insets(0, 0, 5, 0);
 				constraints.gridx = i+1;
 				constraints.gridy = j+1;
-				constraints.ipadx = 45;
-				constraints.ipady = 45;
+				constraints.ipadx = 20;
+				constraints.ipady = 20;
 				constraints.insets = inset;
 				leftPanel.add(panel, constraints);
 				team1.put(""+i+""+j, panel);
@@ -112,8 +151,12 @@ public class Client implements ActionListener{
 					switch(comando.split("\\|")[0]){
 					case "play":
 						String coordenadas = "";
-						while(coordenadas.length() == 0){
+						while(coordenadas.length() != 2){
 							coordenadas = JOptionPane.showInputDialog(frame, "Digite as coordenadas juntas (ex. XY), jogadas informadas anteiormente serão desconsideradas.:");
+							if(coordenadas != null && coordenadas.equalsIgnoreCase("sair")){
+								finished = true;
+								break;
+							}
 							if(coordenadas == null){
 								coordenadas = "";
 							}else{
@@ -121,12 +164,8 @@ public class Client implements ActionListener{
 									coordenadas = "";
 								}
 							}
-							if(coordenadas.length() > 0 && jogadas.indexOf(coordenadas) > -1){
-								coordenadas = "";
-							}
 						}
 						coordenadas = coordenadas.charAt(1)+""+coordenadas.charAt(0);
-						jogadas += coordenadas+",";
 						mmc.enviarCoordenadas(coordenadas, id);
 						break;
 					case "update":

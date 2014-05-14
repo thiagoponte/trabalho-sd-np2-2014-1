@@ -13,12 +13,14 @@ public class MiddleManServer {
 	HashMap<Integer, Object> team2 = new HashMap<Integer, Object>();
 	Connector server = null;
 	Connection connection = null;
-	public MiddleManServer(){
+	private String jogadas1 = "";
+	private String jogadas2 = "";
+	public MiddleManServer(int qtPlayer){
 		try {
 			this.server = ConnectorFactory.getConnector(ConnectorFactory.UDP);
 			connection = server.startServer(10080);
 			int playerId = 0;
-			while (playerId < 2) {
+			while (playerId < qtPlayer) {
 				Connection c = connection.acceptClient();
 				playerId++;
 				c.send(playerId+"");
@@ -39,13 +41,26 @@ public class MiddleManServer {
 	
 	public String receberJogada(int playerId, LinkedHashMap<String,Integer> mapa){
 		Connection c = null;
+		String jogada = "";
 		if(team1.containsKey(playerId)){
 			c = (Connection) team1.get(playerId);
+			jogada = jogadas1;
 		}else if(team2.containsKey(playerId)){
 			c = (Connection) team2.get(playerId);
+			jogada = jogadas2;
 		}
 		c.send("play");
 		String coordenada = c.recieve();
+		while(jogada.indexOf(coordenada) > -1){
+			c.send("play");
+			coordenada = c.recieve();
+		}
+		jogada += coordenada+",";
+		if(team1.containsKey(playerId)){
+			jogadas1 = jogada;
+		}else if(team2.containsKey(playerId)){
+			jogadas2 = jogada;
+		}
 		String hit = "N";
 		if(mapa.containsKey(coordenada)){
 			hit = "S";
