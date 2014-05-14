@@ -5,25 +5,27 @@ import interfaces.Connection;
 import interfaces.Connector;
 
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map.Entry;
 
 public class MiddleManServer {
-	HashMap<String, Object> team1 = new HashMap<String, Object>();
-	HashMap<String, Object> team2 = new HashMap<String, Object>();
+	HashMap<Integer, Object> team1 = new HashMap<Integer, Object>();
+	HashMap<Integer, Object> team2 = new HashMap<Integer, Object>();
 	Connector server = null;
 	Connection connection = null;
 	public MiddleManServer(){
 		try {
 			this.server = ConnectorFactory.getConnector(ConnectorFactory.UDP);
 			connection = server.startServer(10080);
-			int countConnection = 0;
-			while (countConnection < 2) {
+			int playerId = 0;
+			while (playerId < 2) {
 				Connection c = connection.acceptClient();
-				countConnection++;
-				if(countConnection % 2 != 0){
-					team1.put(c.getIp().getHostAddress(), c);
+				playerId++;
+				c.send(playerId+"");
+				if(playerId % 2 != 0){
+					team1.put(playerId, c);
 				}else{
-					team2.put(c.getIp().getHostAddress(), c);
+					team2.put(playerId, c);
 				}
 			}
 		} catch (Exception e) {
@@ -35,19 +37,50 @@ public class MiddleManServer {
 		
 	}
 	
-	public void receberJogada(){
+	public String receberJogada(int playerId, LinkedHashMap<String,Integer> mapa){
+		Connection c = null;
+		if(team1.containsKey(playerId)){
+			c = (Connection) team1.get(playerId);
+		}else if(team2.containsKey(playerId)){
+			c = (Connection) team2.get(playerId);
+		}
+		c.send("play");
+		String coordenada = c.recieve();
+		String hit = "N";
+		if(mapa.containsKey(coordenada)){
+			hit = "S";
+			mapa.remove(coordenada);
+		}
+//		c.send("update|"+hit+"|"+coordenada+"|"+playerId);
+		atualizarMapas(mapa, coordenada, hit);
+		return hit;
+	}
+
+	private void atualizarMapas(LinkedHashMap<String, Integer> mapa, String coordenada, String hit) {
+		for (Entry<Integer, Object> e : team1.entrySet()) {
+//			if(e.getKey() != playerId){
+				Connection c = (Connection) e.getValue();
+				c.send("update|"+hit+"|"+coordenada+"|"+e.getKey());
+//			}
+		}
+		for (Entry<Integer, Object> e : team2.entrySet()) {
+//			if(e.getKey() != playerId){
+				Connection c = (Connection) e.getValue();
+				c.send("update|"+hit+"|"+coordenada+"|"+e.getKey());
+//			}
+		}
 		
 	}
 
 	public void enviarMapa(HashMap<String, Integer> mapa, int i) {
-		HashMap<String, Object> team = null;
+		HashMap<Integer, Object> team = null;
 		if(i == 1){
 			team = team1;
 		}else if(i == 2){
 			team = team2;
 		}
 		String coordenadas = parseMap(mapa);
-		for (Entry<String, Object> e : team.entrySet()) {
+		for (Entry<Integer, Object> e : team.entrySet()) {
 			Connection jogador = (Connection) e.getValue();
 			jogador.send(coordenadas);
 		}
@@ -60,5 +93,32 @@ public class MiddleManServer {
 			s += entry.getKey() + "|" +entry.getValue()+ ",";
 		}
 		return s;
+	}
+
+	public void close() {
+		connection.close();
+		
+	}
+
+	public void finalizarJogo(int team) {
+		String msgVitoria = "Sua equipe ganhou!";
+		String msgDerrota = "Sua equipe foi derrotada!";
+		HashMap<Integer, Object> teamVencedora = null;
+		HashMap<Integer, Object> teamPerdedora = null;
+		if(team == 1){
+			teamVencedora = team1;
+			teamPerdedora = team2;
+		}else{
+			teamVencedora = team2;
+			teamPerdedora = team1;
+		}
+		for (Entry<Integer, Object> e : teamVencedora.entrySet()) {
+			Connection c = (Connection) e.getValue();
+			c.send("fim|"+msgVitoria);
+		}
+		for (Entry<Integer, Object> e : teamPerdedora.entrySet()) {
+			Connection c = (Connection) e.getValue();
+			c.send("fim|"+msgDerrota);
+		}
 	}
 }

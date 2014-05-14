@@ -55,7 +55,7 @@ public class ConnectorUDP implements Connector, Connection {
 	}
 
 	@Override
-	public String receive() {
+	public String recieve() {
 
 		String str = "";
 

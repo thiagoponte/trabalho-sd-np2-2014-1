@@ -9,16 +9,19 @@ import java.util.LinkedHashMap;
 public class MiddleManClient {
 	private Connection connection;
 	private Connector client;
-	public void conectar(String ip){
+	public int conectar(String ip){
 		try{
 			this.client = ConnectorFactory.getConnector(ConnectorFactory.UDP);
 			this.connection = client.connect(ip, 10080);
+			String id = connection.recieve();
+			return Integer.parseInt(id);
 		} catch(Exception e){
 			
 		}
+		return -1;
 	}
-	public LinkedHashMap<String, Integer> receberCoordenadas() {
-		String msg = connection.receive();
+	public LinkedHashMap<String, Integer> receberMapa() {
+		String msg = connection.recieve();
 		System.out.println(msg);
 		String [] coordenadas = msg.split(",");
 		LinkedHashMap<String, Integer> mapa = new LinkedHashMap<String, Integer>();
@@ -28,5 +31,15 @@ public class MiddleManClient {
 			mapa.put(xy, Integer.parseInt(barco));
 		}
 		return mapa;
+	}
+	public String enviarCoordenadas(String coordenada, int id) {
+//		String msg = id+"\\|"+coordenada;
+		connection.send(coordenada);
+		return null;
+	}
+
+	public String recebe(){
+		String msg = connection.recieve();
+		return msg;
 	}
 }

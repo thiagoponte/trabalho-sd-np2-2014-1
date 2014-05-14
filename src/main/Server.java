@@ -19,8 +19,31 @@ public class Server {
 		mms.enviarMapa(mapa1, 1);
 		mms.enviarMapa(mapa2, 2);
 		boolean finished = false;
-		while(finished){
-			
+		int countPlayer = 1;
+		mms.close();
+		while(!finished){
+			String hit = "";
+			if(countPlayer % 2 != 0){
+				hit = mms.receberJogada(countPlayer, mapa2);
+			}else{
+				hit = mms.receberJogada(countPlayer, mapa1);
+			}
+			if(!hit.equalsIgnoreCase("S")){
+				countPlayer++;
+			}
+			if(countPlayer > 2){
+				countPlayer = 1;
+			}
+			if(mapa1.size() == 0 || mapa2.size() == 0){
+				int team = 0;
+				if(mapa1.size() == 0){
+					team = 2;
+				}else{
+					team = 1;
+				}
+				mms.finalizarJogo(team);
+				finished = true;
+			}
 		}
 	}
 
@@ -54,6 +77,8 @@ public class Server {
 			while(!mapa.containsKey(""+x+""+y)){
 				int x1= x+1;
 				int y1= y+1;
+				int x0= x-1;
+				int y0= y-1;
 				if(!mapa.containsKey(""+x+""+y)){
 					if(!mapa.containsKey(""+x+""+y1)){
 						mapa.put(""+x+""+y, Constantes.Posicao.BARCO_2.getTipo());
@@ -61,12 +86,24 @@ public class Server {
 					}else if(!mapa.containsKey(""+x1+""+y)){
 						mapa.put(""+x+""+y, Constantes.Posicao.BARCO_2.getTipo());
 						mapa.put(""+x1+""+y, Constantes.Posicao.BARCO_2.getTipo());
+					}else if(!mapa.containsKey(""+x+""+y0)){
+						mapa.put(""+x+""+y, Constantes.Posicao.BARCO_2.getTipo());
+						mapa.put(""+x+""+y0, Constantes.Posicao.BARCO_2.getTipo());
+					}else if(!mapa.containsKey(""+x0+""+y)){
+						mapa.put(""+x+""+y, Constantes.Posicao.BARCO_2.getTipo());
+						mapa.put(""+x0+""+y, Constantes.Posicao.BARCO_2.getTipo());
 					}
 				}else{
 					r = new Random();
 					r1 = new Random();
 					x = r.nextInt(5);
 					y = r1.nextInt(5);
+					while(mapa.containsKey(""+x+""+y)){
+						r = new Random();
+						r1 = new Random();
+						x = r.nextInt(5);
+						y = r1.nextInt(5);
+					}
 				}
 			}
 		}
