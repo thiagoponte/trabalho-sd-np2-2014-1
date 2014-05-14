@@ -52,21 +52,22 @@ public class MiddleManServer {
 			mapa.remove(coordenada);
 		}
 //		c.send("update|"+hit+"|"+coordenada+"|"+playerId);
-		atualizarMapas(mapa, coordenada, hit);
+		atualizarMapas(mapa, coordenada, hit, playerId);
 		return hit;
 	}
 
-	private void atualizarMapas(LinkedHashMap<String, Integer> mapa, String coordenada, String hit) {
+	private void atualizarMapas(LinkedHashMap<String, Integer> mapa, String coordenada, String hit, int playerId) {
+		String team = playerId % 2 != 0? "1":"2";
 		for (Entry<Integer, Object> e : team1.entrySet()) {
 //			if(e.getKey() != playerId){
 				Connection c = (Connection) e.getValue();
-				c.send("update|"+hit+"|"+coordenada+"|"+e.getKey());
+				c.send("update|"+hit+"|"+coordenada+"|"+team);
 //			}
 		}
 		for (Entry<Integer, Object> e : team2.entrySet()) {
 //			if(e.getKey() != playerId){
 				Connection c = (Connection) e.getValue();
-				c.send("update|"+hit+"|"+coordenada+"|"+e.getKey());
+				c.send("update|"+hit+"|"+coordenada+"|"+team);
 //			}
 		}
 		

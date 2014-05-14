@@ -18,6 +18,7 @@ public class SimpleClient {
 		mmc = new MiddleManClient();
 		String ip = "localhost";//sc.next();
 		id = mmc.conectar(ip);
+		System.out.println("ID: "+id);
 		coordenadas = mmc.receberMapa();
 		montarMapas();
 		boolean finished = false;
@@ -50,10 +51,19 @@ public class SimpleClient {
 				int x = Integer.parseInt(comando.split("\\|")[2].split("")[1]);
 				int y = Integer.parseInt(comando.split("\\|")[2].split("")[2]);
 				int team = Integer.parseInt(comando.split("\\|")[3]);
-				if(team % 2 != 0){
-					team2[x][y] = mark;
+				if(id % 2 != 0){
+					if(team % 2 != 0){
+						team2[x][y] = mark;
+					}else{
+						team1[x][y] = mark;
+					}
 				}else{
-					team1[x][y] = mark;
+					if(team % 2 != 0){
+						team1[x][y] = mark;
+					}else{
+						team2[x][y] = mark;
+					}
+					
 				}
 				break;
 			case "fim":
