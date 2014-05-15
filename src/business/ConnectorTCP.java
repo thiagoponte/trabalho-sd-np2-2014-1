@@ -72,7 +72,7 @@ public class ConnectorTCP implements Connector, Connection {
 	}
 
 	@Override
-	public String recieve() {
+	public String receive() {
 		String str = "";
 		try {
 			if (ss == null) {

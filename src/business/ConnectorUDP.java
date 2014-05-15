@@ -55,22 +55,19 @@ public class ConnectorUDP implements Connector, Connection {
 	}
 
 	@Override
-	public String recieve() {
+	public String receive() throws IOException {
 
 		String str = "";
 
 		byte[] buffer = new byte[1000];
 		DatagramPacket pacote = new DatagramPacket(buffer, buffer.length);
-		try {
-			if (ds != null) {
-				ds.receive(pacote);
-			} else if (ss != null) {
-				ss.receive(pacote);
-			}
-			str = new String(pacote.getData(), 0, pacote.getLength());
-		} catch (IOException e) {
-			e.printStackTrace();
+
+		if (ds != null) {
+			ds.receive(pacote);
+		} else if (ss != null) {
+			ss.receive(pacote);
 		}
+		str = new String(pacote.getData(), 0, pacote.getLength());
 
 		return str;
 	}
@@ -119,7 +116,7 @@ public class ConnectorUDP implements Connector, Connection {
 
 	private void setPort(int port) {
 		this.port = port;
-		
+
 	}
 
 	private void setIp(InetAddress address) {

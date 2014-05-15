@@ -1,12 +1,12 @@
 package main;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map.Entry;
 import java.util.Random;
 
 import business.Constantes;
-
 import communication.MiddleManServer;
 
 public class Server {
@@ -22,27 +22,46 @@ public class Server {
 		boolean finished = false;
 		int countPlayer = 1;
 		mms.close();
-		while(!finished){
+		while (!finished) {
 			String hit = "";
-			if(countPlayer % 2 != 0){
-				hit = mms.receberJogada(countPlayer, mapa2);
-			}else{
-				hit = mms.receberJogada(countPlayer, mapa1);
+			if (countPlayer % 2 != 0) {
+				try {
+					hit = mms.receberJogada(countPlayer, mapa2);
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			} else {
+				try {
+					hit = mms.receberJogada(countPlayer, mapa1);
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}
-			if(!hit.equalsIgnoreCase("S")){
+			if (hit.contains("out")) {
+				if (hit.contains("1")) {
+					mms.finalizarJogo(1, " pois a outra equipe desistiu");
+				} else {
+					mms.finalizarJogo(2, " pois a outra equipe desistiu");
+				}
+
+				finished = true;
+			}
+			if (!hit.equalsIgnoreCase("S")) {
 				countPlayer++;
 			}
-			if(countPlayer > qtPlayer){
+			if (countPlayer > qtPlayer) {
 				countPlayer = 1;
 			}
-			if(mapa1.size() == 0 || mapa2.size() == 0){
+			if (mapa1.size() == 0 || mapa2.size() == 0) {
 				int team = 0;
-				if(mapa1.size() == 0){
+				if (mapa1.size() == 0) {
 					team = 2;
-				}else{
+				} else {
 					team = 1;
 				}
-				mms.finalizarJogo(team);
+				mms.finalizarJogo(team, "");
 				finished = true;
 			}
 		}
@@ -58,9 +77,9 @@ public class Server {
 
 	private static void printMap(HashMap<String, Integer> mapa) {
 		for (Entry<String, Integer> entry : mapa.entrySet()) {
-			System.out.println(entry.getKey()+" - > "+entry.getValue());
+			System.out.println(entry.getKey() + " - > " + entry.getValue());
 		}
-		
+
 	}
 
 	private static void gerarNavio2(LinkedHashMap<String, Integer> mapa) {
@@ -69,48 +88,48 @@ public class Server {
 			Random r1 = new Random();
 			int x = r.nextInt(5);
 			int y = r1.nextInt(5);
-			while(mapa.containsKey(""+x+""+y)){
+			while (mapa.containsKey("" + x + "" + y)) {
 				r = new Random();
 				r1 = new Random();
 				x = r.nextInt(5);
 				y = r1.nextInt(5);
 			}
-			while(!mapa.containsKey(""+x+""+y)){
-				int x1= x+1;
-				int y1= y+1;
-				int x0= x-1;
-				int y0= y-1;
-				if(!mapa.containsKey(""+x+""+y)){
-					if(!mapa.containsKey(""+x+""+y1)){
-						mapa.put(""+x+""+y, Constantes.Posicao.BARCO_2.getTipo());
-						mapa.put(""+x+""+y1, Constantes.Posicao.BARCO_2.getTipo());
-					}else if(!mapa.containsKey(""+x1+""+y)){
-						mapa.put(""+x+""+y, Constantes.Posicao.BARCO_2.getTipo());
-						mapa.put(""+x1+""+y, Constantes.Posicao.BARCO_2.getTipo());
-					}else if(!mapa.containsKey(""+x+""+y0)){
-						mapa.put(""+x+""+y, Constantes.Posicao.BARCO_2.getTipo());
-						mapa.put(""+x+""+y0, Constantes.Posicao.BARCO_2.getTipo());
-					}else if(!mapa.containsKey(""+x0+""+y)){
-						mapa.put(""+x+""+y, Constantes.Posicao.BARCO_2.getTipo());
-						mapa.put(""+x0+""+y, Constantes.Posicao.BARCO_2.getTipo());
-					}else{
+			while (!mapa.containsKey("" + x + "" + y)) {
+				int x1 = x + 1;
+				int y1 = y + 1;
+				int x0 = x - 1;
+				int y0 = y - 1;
+				if (!mapa.containsKey("" + x + "" + y)) {
+					if (!mapa.containsKey("" + x + "" + y1)) {
+						mapa.put("" + x + "" + y, Constantes.Posicao.BARCO_2.getTipo());
+						mapa.put("" + x + "" + y1, Constantes.Posicao.BARCO_2.getTipo());
+					} else if (!mapa.containsKey("" + x1 + "" + y)) {
+						mapa.put("" + x + "" + y, Constantes.Posicao.BARCO_2.getTipo());
+						mapa.put("" + x1 + "" + y, Constantes.Posicao.BARCO_2.getTipo());
+					} else if (!mapa.containsKey("" + x + "" + y0)) {
+						mapa.put("" + x + "" + y, Constantes.Posicao.BARCO_2.getTipo());
+						mapa.put("" + x + "" + y0, Constantes.Posicao.BARCO_2.getTipo());
+					} else if (!mapa.containsKey("" + x0 + "" + y)) {
+						mapa.put("" + x + "" + y, Constantes.Posicao.BARCO_2.getTipo());
+						mapa.put("" + x0 + "" + y, Constantes.Posicao.BARCO_2.getTipo());
+					} else {
 						r = new Random();
 						r1 = new Random();
 						x = r.nextInt(5);
 						y = r1.nextInt(5);
-						while(mapa.containsKey(""+x+""+y)){
+						while (mapa.containsKey("" + x + "" + y)) {
 							r = new Random();
 							r1 = new Random();
 							x = r.nextInt(5);
 							y = r1.nextInt(5);
 						}
 					}
-				}else{
+				} else {
 					r = new Random();
 					r1 = new Random();
 					x = r.nextInt(5);
 					y = r1.nextInt(5);
-					while(mapa.containsKey(""+x+""+y)){
+					while (mapa.containsKey("" + x + "" + y)) {
 						r = new Random();
 						r1 = new Random();
 						x = r.nextInt(5);
@@ -119,7 +138,7 @@ public class Server {
 				}
 			}
 		}
-		
+
 	}
 
 	private static void gerarNavio1(LinkedHashMap<String, Integer> mapa) {
@@ -128,14 +147,14 @@ public class Server {
 			Random r1 = new Random();
 			int x = r.nextInt(5);
 			int y = r1.nextInt(5);
-			while(mapa.containsKey(""+x+""+y)){
-				r = new Random();  
-				r1 = new Random(); 
-				x = r.nextInt(5);  
-				y = r1.nextInt(5); 
+			while (mapa.containsKey("" + x + "" + y)) {
+				r = new Random();
+				r1 = new Random();
+				x = r.nextInt(5);
+				y = r1.nextInt(5);
 			}
-			mapa.put(""+x+""+y, Constantes.Posicao.BARCO_1.getTipo());
+			mapa.put("" + x + "" + y, Constantes.Posicao.BARCO_1.getTipo());
 		}
-		
+
 	}
 }

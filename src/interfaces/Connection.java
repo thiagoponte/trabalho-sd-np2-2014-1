@@ -15,8 +15,9 @@ public interface Connection {
 	/**
 	 * Espera uma resposta do servidor e geralmente é usado após o send.
 	 * @return A mensagem recebida
+	 * @throws IOException 
 	 */
-	public String recieve();
+	public String receive() throws IOException;
 	
 	/**
 	 * Aceita uma conexão do lado do servidor e deve ser usado após o método startServer

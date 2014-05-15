@@ -14,7 +14,7 @@ public class Client {
 			Connection connection = client.connect(ip, 10080);
 			Random gerador = new Random();
 			connection.send("coordenadas "+gerador.nextInt());
-			String resposta = connection.recieve();
+			String resposta = connection.receive();
 			System.out.println(resposta);
 			connection.close();
 		} catch (Exception e) {

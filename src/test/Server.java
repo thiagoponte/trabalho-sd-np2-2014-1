@@ -18,7 +18,7 @@ public class Server {
 			while (countConnection < 1) {
 				Connection c = connection.acceptClient();
 				countConnection++;
-				String msg = connection.recieve();
+				String msg = connection.receive();
 				j.put(c.getIp().getHostAddress(), c);
 				connection.send("recebi as suas coordenadas, player-" + countConnection + ".");
 				System.out.println(c.getIp().getHostAddress());
