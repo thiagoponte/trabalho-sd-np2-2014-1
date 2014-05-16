@@ -38,12 +38,12 @@ public class Server {
 					e.printStackTrace();
 				}
 			}
-			// Terminar o jogo por desistência de um jogador
+			// Terminar o jogo por desistï¿½ncia de um jogador
 			if (hit.contains("out")) {
 				if (hit.contains("1")) {
-					mms.finalizarJogo(1, " pois a outra equipe desistiu");
-				} else {
 					mms.finalizarJogo(2, " pois a outra equipe desistiu");
+				} else {
+					mms.finalizarJogo(1, " pois a outra equipe desistiu");
 				}
 
 				finished = true;

@@ -190,7 +190,7 @@ public class Client implements ActionListener {
 								finished = true;
 								break;
 							}
-							if ((coordenadas == null) || (coordenadas.equals(""))) {
+							if ((coordenadas == null)) {
 								coordenadas = "";
 							} else {
 								try {
@@ -198,11 +198,18 @@ public class Client implements ActionListener {
 										coordenadas = "";
 									}
 								} catch (NumberFormatException e) {
-									coordenadas = "";
+									if(!coordenadas.equalsIgnoreCase("out")){
+										System.out.println(coordenadas);
+										coordenadas = "";
+									}else{
+										break;
+									}
 								}
 							}
 						}
-						coordenadas = coordenadas.charAt(1) + "" + coordenadas.charAt(0);
+						if(coordenadas.length() == 2){
+							coordenadas = coordenadas.charAt(1) + "" + coordenadas.charAt(0);
+						}
 						mmc.enviarCoordenadas(coordenadas, id);
 						break;
 					case "update":

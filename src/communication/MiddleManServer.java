@@ -54,6 +54,7 @@ public class MiddleManServer {
 		c.send("play");
 		String coordenada = c.recieve();
 		// Remove o jogador do time
+		System.out.println(coordenada);
 		if (coordenada.equalsIgnoreCase("out")) {
 			if (team1.containsKey(playerId)) {
 				team1.remove(team1.get(playerId));
@@ -128,6 +129,11 @@ public class MiddleManServer {
 
 	}
 
+	/**
+	 * 
+	 * @param team - equipe vencedora.
+	 * @param extra
+	 */
 	public void finalizarJogo(int team, String extra) {
 		String msgVitoria = "Sua equipe ganhou" + extra + "!";
 		String msgDerrota = "Sua equipe foi derrotada!";
