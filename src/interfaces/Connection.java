@@ -7,26 +7,27 @@ public interface Connection {
 	/**
 	 * 
 	 * @param message: Mensagem a ser enviada
-	 * @param ip: endereço IP da origem
+	 * @param ip: endereï¿½o IP da origem
 	 * @return
 	 */
 	public String send(String message);
 	
 	/**
-	 * Espera uma resposta do servidor e geralmente é usado após o send.
+	 * Espera uma resposta do servidor e geralmente ï¿½ usado apï¿½s o send.
 	 * @return A mensagem recebida
+	 * @throws IOException 
 	 */
-	public String recieve();
+	public String recieve() throws IOException;
 	
 	/**
-	 * Aceita uma conexão do lado do servidor e deve ser usado após o método startServer
-	 * @return O endereço de IP da origem.
+	 * Aceita uma conexï¿½o do lado do servidor e deve ser usado apï¿½s o mï¿½todo startServer
+	 * @return O endereï¿½o de IP da origem.
 	 * @throws IOException
 	 */
 	public Connection acceptClient() throws IOException;
 	
 	/**
-	 * Encerra a conexão.
+	 * Encerra a conexï¿½o.
 	 */
 	public void close();
 

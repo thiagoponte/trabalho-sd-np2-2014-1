@@ -37,7 +37,7 @@ public class ConnectorTCP implements Connector, Connection {
 	public void setPort(int port) {
 		this.port = port;
 	}
-	
+
 	@Override
 	public Connection connect(String ip, int port) {
 		// TODO Auto-generated method stub
@@ -108,7 +108,7 @@ public class ConnectorTCP implements Connector, Connection {
 	@Override
 	public Connection startServer(int port) throws IOException {
 		ss = new ServerSocket(port);
-		
+
 		return this;
 	}
 

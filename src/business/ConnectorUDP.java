@@ -27,7 +27,7 @@ public class ConnectorUDP implements Connector, Connection {
 			ds.connect(new InetSocketAddress(ip, port));
 			setIp(InetAddress.getByName(ip));
 			setPort(port);
-			// Envia uma mensagem para o servidor aceitá-la
+			// Envia uma mensagem para o servidor aceitï¿½-la
 			send("Connect");
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -55,22 +55,19 @@ public class ConnectorUDP implements Connector, Connection {
 	}
 
 	@Override
-	public String recieve() {
+	public String recieve() throws IOException {
 
 		String str = "";
 
 		byte[] buffer = new byte[1000];
 		DatagramPacket pacote = new DatagramPacket(buffer, buffer.length);
-		try {
-			if (ds != null) {
-				ds.receive(pacote);
-			} else if (ss != null) {
-				ss.receive(pacote);
-			}
-			str = new String(pacote.getData(), 0, pacote.getLength());
-		} catch (IOException e) {
-			e.printStackTrace();
+
+		if (ds != null) {
+			ds.receive(pacote);
+		} else if (ss != null) {
+			ss.receive(pacote);
 		}
+		str = new String(pacote.getData(), 0, pacote.getLength());
 
 		return str;
 	}
@@ -79,6 +76,10 @@ public class ConnectorUDP implements Connector, Connection {
 	public void close() {
 		if (ds != null) {
 			ds.close();
+		}
+
+		if (ss != null) {
+			ss.close();
 		}
 	}
 
@@ -96,7 +97,7 @@ public class ConnectorUDP implements Connector, Connection {
 
 	@Override
 	public Connection acceptClient() throws IOException {
-		// accept bloqueia enquanto não receber uma conexão
+		// accept bloqueia enquanto nï¿½o receber uma conexï¿½o
 
 		byte[] buffer = new byte[1000];
 		DatagramSocket c = new DatagramSocket();
@@ -106,7 +107,7 @@ public class ConnectorUDP implements Connector, Connection {
 		c.connect(pacote.getAddress(), pacote.getPort());
 		clients.add(c);
 
-		// retorna IP e porta da conexão
+		// retorna IP e porta da conexï¿½o
 		setIp(pacote.getAddress());
 		setPort(pacote.getPort());
 		ConnectorUDP cUDP = new ConnectorUDP();
@@ -119,7 +120,7 @@ public class ConnectorUDP implements Connector, Connection {
 
 	private void setPort(int port) {
 		this.port = port;
-		
+
 	}
 
 	private void setIp(InetAddress address) {

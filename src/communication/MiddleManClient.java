@@ -4,6 +4,7 @@ import factory.ConnectorFactory;
 import interfaces.Connection;
 import interfaces.Connector;
 
+import java.io.IOException;
 import java.util.LinkedHashMap;
 
 public class MiddleManClient {
@@ -20,7 +21,7 @@ public class MiddleManClient {
 		}
 		return -1;
 	}
-	public LinkedHashMap<String, Integer> receberMapa() {
+	public LinkedHashMap<String, Integer> receberMapa() throws IOException {
 		String msg = connection.recieve();
 		System.out.println(msg);
 		String [] coordenadas = msg.split(",");
@@ -37,9 +38,18 @@ public class MiddleManClient {
 		connection.send(coordenada);
 		return null;
 	}
+	
+	public String enviarMensagem(String msg){
+		connection.send(msg);
+		return null;
+	}
 
-	public String recebe(){
+	public String recebe() throws IOException{
 		String msg = connection.recieve();
 		return msg;
+	}
+	
+	public void fechar(){
+		connection.close();
 	}
 }
