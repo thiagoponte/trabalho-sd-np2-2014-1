@@ -182,7 +182,9 @@ public class Client implements ActionListener {
 						String coordenadas = "";
 						while (coordenadas.length() != 2) {
 							coordenadas = JOptionPane.showInputDialog(frame,
-									"Digite as coordenadas juntas (ex. XY), jogadas informadas anteriormente ser\u00E3o desconsideradas.:");
+									"Digite as coordenadas juntas (ex. XY), " + System.getProperty("line.separator")
+											+ "jogadas informadas anteriormente " + System.getProperty("line.separator")
+											+ "ser\u00E3o desconsideradas.:");
 							if (coordenadas != null && coordenadas.equalsIgnoreCase("sair")) {
 								finished = true;
 								break;
@@ -190,7 +192,11 @@ public class Client implements ActionListener {
 							if ((coordenadas == null) || (coordenadas.equals(""))) {
 								coordenadas = "";
 							} else {
-								if (Integer.parseInt(coordenadas) > 55 || Integer.parseInt(coordenadas) < 0) {
+								try {
+									if (Integer.parseInt(coordenadas) > 55 || Integer.parseInt(coordenadas) < 0) {
+										coordenadas = "";
+									}
+								} catch (NumberFormatException e) {
 									coordenadas = "";
 								}
 							}

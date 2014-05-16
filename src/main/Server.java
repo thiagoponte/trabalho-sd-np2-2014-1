@@ -21,7 +21,6 @@ public class Server {
 		mms.enviarMapa(mapa2, 2);
 		boolean finished = false;
 		int countPlayer = 1;
-		mms.close();
 		while (!finished) {
 			String hit = "";
 			if (countPlayer % 2 != 0) {
@@ -39,6 +38,7 @@ public class Server {
 					e.printStackTrace();
 				}
 			}
+			// Terminar o jogo por desistência de um jogador
 			if (hit.contains("out")) {
 				if (hit.contains("1")) {
 					mms.finalizarJogo(1, " pois a outra equipe desistiu");
@@ -47,6 +47,7 @@ public class Server {
 				}
 
 				finished = true;
+				mms.close();
 			}
 			if (!hit.equalsIgnoreCase("S")) {
 				countPlayer++;
@@ -63,6 +64,7 @@ public class Server {
 				}
 				mms.finalizarJogo(team, "");
 				finished = true;
+				mms.close();
 			}
 		}
 	}
