@@ -37,10 +37,6 @@ public class MiddleManServer {
 		}
 	}
 
-	public void enviarJogada(String msg) {
-
-	}
-
 	public String receberJogada(int playerId, LinkedHashMap<String, Integer> mapa) throws IOException {
 		Connection c = null;
 		String jogada = "";
@@ -52,15 +48,17 @@ public class MiddleManServer {
 			jogada = jogadas2;
 		}
 		c.send("play");
+		System.out.println("Mandou PLAY para "+c.getIp().getHostName());
+		
 		String coordenada = c.recieve();
 		// Remove o jogador do time
 		System.out.println(coordenada);
 		if (coordenada.equalsIgnoreCase("out")) {
 			if (team1.containsKey(playerId)) {
-				team1.remove(team1.get(playerId));
+//				team1.remove(team1.get(playerId));
 				return "out1";
 			} else if (team2.containsKey(playerId)) {
-				team2.remove(team2.get(playerId));
+//				team2.remove(team2.get(playerId));
 				return "out2";
 			}
 		}

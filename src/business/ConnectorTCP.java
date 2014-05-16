@@ -76,18 +76,14 @@ public class ConnectorTCP implements Connector, Connection {
 	}
 
 	@Override
-	public String recieve() {
+	public String recieve() throws IOException {
 		String str = "";
-		try {
-			if (ss == null) {
-				br = new BufferedReader(new InputStreamReader(s.getInputStream()));
-			} else {
-				br = new BufferedReader(new InputStreamReader(client.getInputStream()));
-			}
-			str = br.readLine();
-		} catch (IOException e) {
-			e.printStackTrace();
+		if (ss == null) {
+			br = new BufferedReader(new InputStreamReader(s.getInputStream()));
+		} else {
+			br = new BufferedReader(new InputStreamReader(client.getInputStream()));
 		}
+		str = br.readLine();
 		return str;
 	}
 

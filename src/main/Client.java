@@ -9,7 +9,6 @@ import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.net.SocketException;
 import java.util.LinkedHashMap;
 
 import javax.imageio.ImageIO;
@@ -24,6 +23,7 @@ import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
 
 import business.Constantes;
+
 import communication.MiddleManClient;
 
 public class Client implements ActionListener {
@@ -56,7 +56,7 @@ public class Client implements ActionListener {
 				}
 			});
 		} catch (Exception e) {
-
+			e.printStackTrace();
 		}
 	}
 
@@ -67,7 +67,6 @@ public class Client implements ActionListener {
 		try {
 			coordenadas = mmc.receberMapa();
 		} catch (IOException e1) {
-			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
 		for (int i = 0; i < 6; i++) {
@@ -160,6 +159,8 @@ public class Client implements ActionListener {
 		}.start();
 		new Thread() {
 
+			private String jogada;
+
 			public void run() {
 				finished = false;
 				while (!finished) {
@@ -170,77 +171,87 @@ public class Client implements ActionListener {
 						} else {
 							finished = true;
 							comando = "fim";
-							// sai do loop pois o jogo terminou por desconexão
+							// sai do loop pois o jogo terminou por desconexï¿½o
 							break;
 						}
-					} catch (SocketException e) {
-
+					} catch (Exception e) {
+						e.printStackTrace();
+						System.out.println(comando);
 						finished = true;
 						comando = "fim";
 						// sai do loop pois o jogo terminou
 						break;
 
-					} catch (IOException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
 					}
-
+					System.out.println(comando);
 					switch (comando.split("\\|")[0]) {
 					case "play":
-						String coordenadas = "";
-						while (coordenadas.length() != 2) {
-							coordenadas = JOptionPane.showInputDialog(frame,
-									"Digite as coordenadas juntas (ex. XY), " + System.getProperty("line.separator")
-											+ "jogadas informadas anteriormente " + System.getProperty("line.separator")
-											+ "ser\u00E3o desconsideradas.:");
-							if (coordenadas != null && coordenadas.equalsIgnoreCase("sair")) {
-								finished = true;
-								break;
-							}
-							if ((coordenadas == null)) {
-								coordenadas = "";
-							} else {
-								try {
-									if (Integer.parseInt(coordenadas) > 55 || Integer.parseInt(coordenadas) < 0) {
-										coordenadas = "";
-									}
-								} catch (NumberFormatException e) {
-									if (!coordenadas.equalsIgnoreCase("out")) {
-										System.out.println(coordenadas);
-										coordenadas = "";
-									} else {
-										break;
+						new Thread(
+								new Runnable() {
+									public void run() {
+										String coordenadas = "";
+										while (coordenadas.length() != 2) {
+											coordenadas = JOptionPane.showInputDialog(frame,
+													"Digite as coordenadas juntas (ex. XY), " + System.getProperty("line.separator")
+													+ "jogadas informadas anteriormente " + System.getProperty("line.separator")
+													+ "ser\u00E3o desconsideradas.:");
+											if (coordenadas != null && coordenadas.equalsIgnoreCase("sair")) {
+												finished = true;
+												break;
+											}
+											if ((coordenadas == null) || coordenadas.equals("")) {
+												coordenadas = "";
+											} else {
+												try {
+													if (Integer.parseInt(coordenadas.charAt(1)+"") > 5 || Integer.parseInt(coordenadas.charAt(0)+"") > 5) {
+														coordenadas = "";
+													}
+												} catch (Exception e) {
+													e.printStackTrace();
+													if (!coordenadas.equalsIgnoreCase("out")) {
+														System.out.println(coordenadas);
+														coordenadas = "";
+													} else {
+														break;
+													}
+												}
+											}
+										}
+										if (coordenadas.length() == 2) {
+											coordenadas = coordenadas.charAt(1) + "" + coordenadas.charAt(0);
+										}
+										mmc.enviarCoordenadas(coordenadas, id);
 									}
 								}
-							}
-						}
-						if (coordenadas.length() == 2) {
-							coordenadas = coordenadas.charAt(1) + "" + coordenadas.charAt(0);
-						}
-						mmc.enviarCoordenadas(coordenadas, id);
+								).start();
 						break;
 					case "update":
-						Color mark = null;
-						if (comando.indexOf('S') > -1) {
-							mark = Color.GREEN;
-						} else {
-							mark = Color.RED;
-						}
-						int team = Integer.parseInt(comando.split("\\|")[3]);
-						if (id % 2 != 0) {
-							if (team % 2 != 0) {
-								team2.get(comando.split("\\|")[2]).setBackground(mark);
-							} else {
-								team1.get(comando.split("\\|")[2]).setBackground(mark);
-							}
-						} else {
-							if (team % 2 != 0) {
-								team1.get(comando.split("\\|")[2]).setBackground(mark);
-							} else {
-								team2.get(comando.split("\\|")[2]).setBackground(mark);
-							}
-						}
-						updateUI();
+						jogada = String.valueOf(comando);
+						new Thread(){
+							public void run() {
+								Color mark = null;
+								if (jogada.indexOf('S') > -1) {
+									mark = Color.GREEN;
+								} else {
+									mark = Color.RED;
+								}
+								int team = Integer.parseInt(jogada.split("\\|")[3]);
+								if (id % 2 != 0) {
+									if (team % 2 != 0) {
+										team2.get(jogada.split("\\|")[2]).setBackground(mark);
+									} else {
+										team1.get(jogada.split("\\|")[2]).setBackground(mark);
+									}
+								} else {
+									if (team % 2 != 0) {
+										team1.get(jogada.split("\\|")[2]).setBackground(mark);
+									} else {
+										team2.get(jogada.split("\\|")[2]).setBackground(mark);
+									}
+								}
+								updateUI();
+							};
+						}.start();
 						break;
 					case "fim":
 						System.out.println(comando.split("\\|")[1]);

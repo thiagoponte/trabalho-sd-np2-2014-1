@@ -7,15 +7,16 @@ import java.util.Map.Entry;
 import java.util.Random;
 
 import business.Constantes;
+
 import communication.MiddleManServer;
 
 public class Server {
 	public static void main(String[] args) {
 		int qtPlayer = 2;
 		MiddleManServer mms = new MiddleManServer(qtPlayer);
-		System.out.println("MAPA 1--------------------------------");
+//		System.out.println("MAPA 1--------------------------------");
 		LinkedHashMap<String, Integer> mapa1 = gerarMapa();
-		System.out.println("MAPA 2--------------------------------");
+//		System.out.println("MAPA 2--------------------------------");
 		LinkedHashMap<String, Integer> mapa2 = gerarMapa();
 		mms.enviarMapa(mapa1, 1);
 		mms.enviarMapa(mapa2, 2);
@@ -23,21 +24,16 @@ public class Server {
 		int countPlayer = 1;
 		while (!finished) {
 			String hit = "";
-			if (countPlayer % 2 != 0) {
 				try {
-					hit = mms.receberJogada(countPlayer, mapa2);
+					if (countPlayer % 2 != 0) {
+						hit = mms.receberJogada(countPlayer, mapa2);
+					} else {
+						hit = mms.receberJogada(countPlayer, mapa1);
+					}
 				} catch (IOException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-			} else {
-				try {
-					hit = mms.receberJogada(countPlayer, mapa1);
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			}
+			System.out.println(hit);
 			// Terminar o jogo por desist�ncia de um jogador
 			if (hit.contains("out")) {
 				if (hit.contains("1")) {
@@ -73,10 +69,11 @@ public class Server {
 		LinkedHashMap<String, Integer> mapa = new LinkedHashMap<String, Integer>();
 		gerarNavio1(mapa);
 		gerarNavio2(mapa);
-		printMap(mapa);
+//		printMap(mapa);
 		return mapa;
 	}
 
+	@Deprecated
 	private static void printMap(HashMap<String, Integer> mapa) {
 		for (Entry<String, Integer> entry : mapa.entrySet()) {
 			System.out.println(entry.getKey() + " - > " + entry.getValue());
@@ -101,7 +98,7 @@ public class Server {
 				int y1 = y + 1;
 				int x0 = x - 1;
 				int y0 = y - 1;
-				if (!mapa.containsKey("" + x + "" + y)) {
+				if (!mapa.containsKey("" + x + "" + y) && x0 > 0 && y0 > 0) {
 					if (!mapa.containsKey("" + x + "" + y1)) {
 						mapa.put("" + x + "" + y, Constantes.Posicao.BARCO_2.getTipo());
 						mapa.put("" + x + "" + y1, Constantes.Posicao.BARCO_2.getTipo());
@@ -140,7 +137,6 @@ public class Server {
 				}
 			}
 		}
-
 	}
 
 	private static void gerarNavio1(LinkedHashMap<String, Integer> mapa) {
@@ -157,6 +153,5 @@ public class Server {
 			}
 			mapa.put("" + x + "" + y, Constantes.Posicao.BARCO_1.getTipo());
 		}
-
 	}
 }
