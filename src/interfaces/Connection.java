@@ -34,4 +34,6 @@ public interface Connection {
 	public InetAddress getIp();
 
 	public int getPort();
+	
+	public boolean isConnected();
 }

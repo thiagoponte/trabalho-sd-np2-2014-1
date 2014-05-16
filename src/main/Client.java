@@ -47,7 +47,8 @@ public class Client implements ActionListener {
 			frame.setIconImage(ImageIO.read(new File("src/img/b2.png")));
 			frame.addWindowListener(new java.awt.event.WindowAdapter() {
 				public void windowClosed(java.awt.event.WindowEvent evt) {
-					// Fecha conexï¿½o ao fechar janela e envia mensagem de saï¿½da
+					// Fecha conexï¿½o ao fechar janela e envia mensagem de
+					// saï¿½da
 					if (mmc != null) {
 						mmc.enviarMensagem("out");
 						mmc.fechar();
@@ -164,20 +165,26 @@ public class Client implements ActionListener {
 				while (!finished) {
 					String comando = null;
 					try {
-						comando = mmc.recebe();
-					} catch (SocketException e) {
-						if (e.getLocalizedMessage().contains("socket closed")) {
+						if (mmc.conectado()) {
+							comando = mmc.recebe();
+						} else {
 							finished = true;
 							comando = "fim";
-							// sai do loop pois o jogo terminou
+							// sai do loop pois o jogo terminou por desconexão
 							break;
 						}
+					} catch (SocketException e) {
+
+						finished = true;
+						comando = "fim";
+						// sai do loop pois o jogo terminou
+						break;
 
 					} catch (IOException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
-					
+
 					switch (comando.split("\\|")[0]) {
 					case "play":
 						String coordenadas = "";
@@ -198,16 +205,16 @@ public class Client implements ActionListener {
 										coordenadas = "";
 									}
 								} catch (NumberFormatException e) {
-									if(!coordenadas.equalsIgnoreCase("out")){
+									if (!coordenadas.equalsIgnoreCase("out")) {
 										System.out.println(coordenadas);
 										coordenadas = "";
-									}else{
+									} else {
 										break;
 									}
 								}
 							}
 						}
-						if(coordenadas.length() == 2){
+						if (coordenadas.length() == 2) {
 							coordenadas = coordenadas.charAt(1) + "" + coordenadas.charAt(0);
 						}
 						mmc.enviarCoordenadas(coordenadas, id);

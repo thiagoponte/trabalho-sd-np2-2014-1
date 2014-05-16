@@ -136,5 +136,9 @@ public class ConnectorUDP implements Connector, Connection {
 	public int getPort() {
 		return port;
 	}
+	
+	public boolean isConnected(){
+		return ds.isConnected();
+	}
 
 }

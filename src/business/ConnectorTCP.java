@@ -37,6 +37,10 @@ public class ConnectorTCP implements Connector, Connection {
 	public void setPort(int port) {
 		this.port = port;
 	}
+	
+	public boolean isConnected(){
+		return s.isConnected();
+	}
 
 	@Override
 	public Connection connect(String ip, int port) {
@@ -62,7 +66,7 @@ public class ConnectorTCP implements Connector, Connection {
 			} else {
 				os = new BufferedWriter(new OutputStreamWriter(client.getOutputStream()));
 			}
-			os.write(message + "\n");
+			os.write(message + System.getProperty("line.separator"));
 			retorno = "S";
 			os.flush();
 		} catch (IOException e) {
