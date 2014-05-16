@@ -17,7 +17,7 @@ public class MiddleManServer {
 	private String jogadas2 = "";
 	public MiddleManServer(int qtPlayer){
 		try {
-			this.server = ConnectorFactory.getConnector(ConnectorFactory.UDP);
+			this.server = ConnectorFactory.getConnector(ConnectorFactory.TCP);
 			connection = server.startServer(10080);
 			int playerId = 0;
 			while (playerId < qtPlayer) {

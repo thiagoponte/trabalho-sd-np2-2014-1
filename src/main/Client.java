@@ -148,6 +148,7 @@ public class Client implements ActionListener{
 				finished = false;
 				while(!finished){
 					String comando = mmc.recebe();
+					System.out.println(comando);
 					switch(comando.split("\\|")[0]){
 					case "play":
 						String coordenadas = "";

@@ -11,7 +11,7 @@ public class MiddleManClient {
 	private Connector client;
 	public int conectar(String ip){
 		try{
-			this.client = ConnectorFactory.getConnector(ConnectorFactory.UDP);
+			this.client = ConnectorFactory.getConnector(ConnectorFactory.TCP);
 			this.connection = client.connect(ip, 10080);
 			String id = connection.recieve();
 			return Integer.parseInt(id);

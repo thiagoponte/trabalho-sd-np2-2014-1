@@ -62,7 +62,7 @@ public class ConnectorTCP implements Connector, Connection {
 			} else {
 				os = new BufferedWriter(new OutputStreamWriter(client.getOutputStream()));
 			}
-			os.write(ip.getHostAddress() + "|" + message + "\n");
+			os.write(message + "\n");
 			retorno = "S";
 			os.flush();
 		} catch (IOException e) {
