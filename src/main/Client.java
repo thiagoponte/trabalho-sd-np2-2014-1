@@ -177,6 +177,11 @@ public class Client implements ActionListener {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
+					
+					if (comando.contains("127.0.0.1")){
+						comando = comando.replace("127.0.0.1|", "");
+					
+					}
 					switch (comando.split("\\|")[0]) {
 					case "play":
 						String coordenadas = "";

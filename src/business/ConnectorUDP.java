@@ -77,6 +77,10 @@ public class ConnectorUDP implements Connector, Connection {
 		if (ds != null) {
 			ds.close();
 		}
+
+		if (ss != null) {
+			ss.close();
+		}
 	}
 
 	@Override
