@@ -84,6 +84,7 @@ public class ConnectorTCP implements Connector, Connection {
 			br = new BufferedReader(new InputStreamReader(client.getInputStream()));
 		}
 		str = br.readLine();
+		System.out.println("depois do readLine: "+ str);
 		return str;
 	}
 

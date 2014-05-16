@@ -45,16 +45,16 @@ public class Client implements ActionListener {
 			frame.setVisible(true);
 			frame.setTitle("Batalha naval");
 			frame.setIconImage(ImageIO.read(new File("src/img/b2.png")));
-			frame.addWindowListener(new java.awt.event.WindowAdapter() {
-				public void windowClosed(java.awt.event.WindowEvent evt) {
-					// Fecha conex�o ao fechar janela e envia mensagem de
-					// sa�da
-					if (mmc != null) {
-						mmc.enviarMensagem("out");
-						mmc.fechar();
-					}
-				}
-			});
+//			frame.addWindowListener(new java.awt.event.WindowAdapter() {
+//				public void windowClosed(java.awt.event.WindowEvent evt) {
+//					// Fecha conex�o ao fechar janela e envia mensagem de
+//					// sa�da
+//					if (mmc != null) {
+//						mmc.enviarMensagem("out");
+//						mmc.fechar();
+//					}
+//				}
+//			});
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

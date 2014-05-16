@@ -147,10 +147,16 @@ public class MiddleManServer {
 		for (Entry<Integer, Object> e : teamVencedora.entrySet()) {
 			Connection c = (Connection) e.getValue();
 			c.send("fim|" + msgVitoria);
+			System.out.println("Mandou o fim dos ganhadores");
+			System.out.println(e.getKey());
+			System.out.println(c.getIp().getHostAddress());
 		}
 		for (Entry<Integer, Object> e : teamPerdedora.entrySet()) {
 			Connection c = (Connection) e.getValue();
 			c.send("fim|" + msgDerrota);
+			System.out.println("Mandou o fim dos perdedores");
+			System.out.println(e.getKey());
+			System.out.println(c.getIp().getHostAddress());
 		}
 	}
 }
