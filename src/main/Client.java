@@ -166,7 +166,7 @@ public class Client implements ActionListener {
 				while (!finished) {
 					String comando = null;
 					try {
-						if (mmc.conectado()) {
+						if (!mmc.fechado()) {
 							comando = mmc.recebe();
 						} else {
 							finished = true;

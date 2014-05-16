@@ -48,16 +48,16 @@ public class MiddleManClient {
 	}
 
 	public String recebe() throws IOException {
-			String msg = connection.recieve();
-			return msg;
-		
+		String msg = connection.recieve();
+		return msg;
+
 	}
 
 	public void fechar() {
 		connection.close();
 	}
-	
-	public boolean conectado(){
-		return connection.isConnected();
+
+	public boolean fechado() {
+		return connection.isClosed();
 	}
 }

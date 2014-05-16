@@ -35,5 +35,5 @@ public interface Connection {
 
 	public int getPort();
 	
-	public boolean isConnected();
+	public boolean isClosed();
 }

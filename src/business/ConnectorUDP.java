@@ -137,8 +137,8 @@ public class ConnectorUDP implements Connector, Connection {
 		return port;
 	}
 	
-	public boolean isConnected(){
-		return ds.isConnected();
+	public boolean isClosed(){
+		return ds.isClosed();
 	}
 
 }

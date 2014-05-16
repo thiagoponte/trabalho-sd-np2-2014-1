@@ -38,8 +38,8 @@ public class ConnectorTCP implements Connector, Connection {
 		this.port = port;
 	}
 	
-	public boolean isConnected(){
-		return s.isConnected();
+	public boolean isClosed(){
+		return s.isClosed();
 	}
 
 	@Override
@@ -49,6 +49,7 @@ public class ConnectorTCP implements Connector, Connection {
 			s = new Socket(ip, port);
 			setIp(InetAddress.getByName(ip));
 			setPort(port);
+			s.setKeepAlive(true);
 		} catch (UnknownHostException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
@@ -117,6 +118,7 @@ public class ConnectorTCP implements Connector, Connection {
 	public Connection acceptClient() throws IOException {
 		ConnectorTCP c = new ConnectorTCP();
 		client = ss.accept();
+		client.setKeepAlive(true);
 		c.client = client;
 		c.setIp(client.getInetAddress());
 		c.setPort(client.getPort());
