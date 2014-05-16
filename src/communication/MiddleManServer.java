@@ -78,11 +78,11 @@ public class MiddleManServer {
 			mapa.remove(coordenada);
 		}
 		// c.send("update|"+hit+"|"+coordenada+"|"+playerId);
-		atualizarMapas(mapa, coordenada, hit, playerId);
-		return hit;
+//		atualizarMapas(mapa, coordenada, hit, playerId);
+		return coordenada+";"+hit;
 	}
 
-	private void atualizarMapas(LinkedHashMap<String, Integer> mapa, String coordenada, String hit, int playerId) {
+	public void atualizarMapas(LinkedHashMap<String, Integer> mapa, String coordenada, String hit, int playerId) {
 		String team = playerId % 2 != 0 ? "1" : "2";
 		for (Entry<Integer, Object> e : team1.entrySet()) {
 			// if(e.getKey() != playerId){

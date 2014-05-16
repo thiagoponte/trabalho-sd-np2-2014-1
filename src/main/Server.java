@@ -11,7 +11,7 @@ import business.Constantes;
 import communication.MiddleManServer;
 
 public class Server {
-	public static void main(String[] args) {
+	public static void main(String[] args) throws IOException {
 		int qtPlayer = 2;
 		MiddleManServer mms = new MiddleManServer(qtPlayer);
 //		System.out.println("MAPA 1--------------------------------");
@@ -24,15 +24,17 @@ public class Server {
 		int countPlayer = 1;
 		while (!finished) {
 			String hit = "";
-				try {
-					if (countPlayer % 2 != 0) {
-						hit = mms.receberJogada(countPlayer, mapa2);
-					} else {
-						hit = mms.receberJogada(countPlayer, mapa1);
-					}
-				} catch (IOException e) {
-					e.printStackTrace();
+			try {
+				if (countPlayer % 2 != 0) {
+					hit = mms.receberJogada(countPlayer, mapa2);
+				} else {
+					hit = mms.receberJogada(countPlayer, mapa1);
 				}
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			String coordenada = hit.split(";")[0];
+			hit = hit.split(";")[1];
 			System.out.println(hit);
 			// Terminar o jogo por desist�ncia de um jogador
 			if (hit.contains("out")) {
@@ -44,6 +46,11 @@ public class Server {
 
 				finished = true;
 				mms.close();
+			}
+			if (countPlayer % 2 != 0) {
+				mms.atualizarMapas(mapa2, coordenada, hit, countPlayer);
+			} else {
+				mms.atualizarMapas(mapa1, coordenada, hit, countPlayer);
 			}
 			if (!hit.equalsIgnoreCase("S")) {
 				countPlayer++;
