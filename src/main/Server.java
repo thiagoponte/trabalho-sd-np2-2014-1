@@ -33,8 +33,7 @@ public class Server {
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-			String coordenada = hit.split(";")[0];
-			hit = hit.split(";")[1];
+			
 			System.out.println(hit);
 			// Terminar o jogo por desist�ncia de um jogador
 			if (hit.contains("out")) {
@@ -46,28 +45,31 @@ public class Server {
 
 				finished = true;
 				mms.close();
-			}
-			if (countPlayer % 2 != 0) {
-				mms.atualizarMapas(mapa2, coordenada, hit, countPlayer);
-			} else {
-				mms.atualizarMapas(mapa1, coordenada, hit, countPlayer);
-			}
-			if (!hit.equalsIgnoreCase("S")) {
-				countPlayer++;
-			}
-			if (countPlayer > qtPlayer) {
-				countPlayer = 1;
-			}
-			if (mapa1.size() == 0 || mapa2.size() == 0) {
-				int team = 0;
-				if (mapa1.size() == 0) {
-					team = 2;
+			}else{
+				String coordenada = hit.split(";")[0];
+				hit = hit.split(";")[1];
+				if (countPlayer % 2 != 0) {
+					mms.atualizarMapas(mapa2, coordenada, hit, countPlayer);
 				} else {
-					team = 1;
+					mms.atualizarMapas(mapa1, coordenada, hit, countPlayer);
 				}
-				mms.finalizarJogo(team, "");
-				finished = true;
-				mms.close();
+				if (!hit.equalsIgnoreCase("S")) {
+					countPlayer++;
+				}
+				if (countPlayer > qtPlayer) {
+					countPlayer = 1;
+				}
+				if (mapa1.size() == 0 || mapa2.size() == 0) {
+					int team = 0;
+					if (mapa1.size() == 0) {
+						team = 2;
+					} else {
+						team = 1;
+					}
+					mms.finalizarJogo(team, "");
+					finished = true;
+					mms.close();
+				}
 			}
 		}
 	}
