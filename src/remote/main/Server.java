@@ -199,7 +199,7 @@ public class Server extends UnicastRemoteObject implements Srmi{
 		try {
 			do{
 				coordenadas = cl.getCoordenadas();
-			} while(jogadas.contains(coordenadas) || coordenadas.indexOf("out") > -1);
+			} while(jogadas.contains(coordenadas) || coordenadas.indexOf("out") < -1);
 			if (coordenadas.equalsIgnoreCase("out")) {
 				if (team1.containsKey(countPlayer)) {
 					return "out1";
