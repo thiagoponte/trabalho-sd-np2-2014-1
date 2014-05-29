@@ -268,7 +268,7 @@ public class Client implements ActionListener {
 
 	private static void updateUI() {
 		frame.repaint(12, 12, 401, 322);
-//		frame.revalidate();
+		frame.revalidate();
 	}
 
 	private static void montarJanelas() {
