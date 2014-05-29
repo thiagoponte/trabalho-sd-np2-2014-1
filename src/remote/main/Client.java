@@ -111,13 +111,16 @@ public class Client extends UnicastRemoteObject implements Crmi, ActionListener{
 	}
 
 	@Override
-	public void finalizarJogo(String msg) throws RemoteException{
+	public void finalizarJogo(final String msg) throws RemoteException{
 		System.out.println(msg);
-		JOptionPane.showMessageDialog(frame, msg);
 		finished = true;
-		frame.dispose();
-		
-		System.exit(0);
+		new Thread(new Runnable() {
+			public void run() {
+				JOptionPane.showMessageDialog(frame, msg);
+				frame.dispose();
+				System.exit(0);
+			}
+		}).start();
 	}
 
 	@Override

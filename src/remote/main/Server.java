@@ -20,7 +20,7 @@ public class Server extends UnicastRemoteObject implements Srmi{
 	static HashMap<Integer, Crmi> team1 = new HashMap<Integer, Crmi>();
 	static HashMap<Integer, Crmi> team2 = new HashMap<Integer, Crmi>();
 	static HashMap<Integer, HashMap<Integer, Crmi>> teams = new HashMap<Integer, HashMap<Integer, Crmi>>();
-	private static int qtPlayer = 3;
+	private static int qtPlayer = 2;
 	private static String jogadas1 = "";
 	private static String jogadas2 = "";
 	protected Server(int port) throws RemoteException {
@@ -55,7 +55,7 @@ public class Server extends UnicastRemoteObject implements Srmi{
 	public static void main(String[] args) {
 		startRegistry();
 		try{
-			while(qtJogadores < qtPlayer){
+			while(qtJogadores <= qtPlayer){
 				Thread.sleep(500);
 			}
 			LinkedHashMap<String, Integer> mapa1 = gerarMapa();
@@ -146,33 +146,21 @@ public class Server extends UnicastRemoteObject implements Srmi{
 			teamPerdedora = team1;
 		}
 		for (final Entry<Integer, Crmi> e : teamVencedora.entrySet()) {
-			new Thread(new Runnable() {
-				@Override
-				public void run() {
-					Crmi c = e.getValue();
-					try {
-						c.finalizarJogo(msgVitoria);
-					} catch (RemoteException e1) {
-					}
-					
-				}
-			}).start();
-			System.out.println("Mandou o fim dos ganhadores");
+			Crmi c = e.getValue();
+			try {
+				c.finalizarJogo(msgVitoria);
+			} catch (RemoteException e1) {
+			}
 		}
+		System.out.println("Mandou o fim dos ganhadores");
 		for (final Entry<Integer, Crmi> e : teamPerdedora.entrySet()) {
-			new Thread(new Runnable() {
-				@Override
-				public void run() {
-					Crmi c = e.getValue();
-					try {
-						c.finalizarJogo(msgDerrota);
-					} catch (RemoteException e1) {
-					}
-					
-				}
-			}).start();
-			System.out.println("Mandou o fim dos perdedores");
+			Crmi c = e.getValue();
+			try {
+				c.finalizarJogo(msgDerrota);
+			} catch (RemoteException e1) {
+			}
 		}
+		System.out.println("Mandou o fim dos perdedores");
 	}
 	private static void startRegistry() {
 		try {
@@ -191,9 +179,15 @@ public class Server extends UnicastRemoteObject implements Srmi{
 		}
 	}
 	private static String receberJogada(int countPlayer, LinkedHashMap<String, Integer> mapa) {
-		int team = countPlayer%2!=0?1:2;
-		String jogadas = countPlayer%2!=0?jogadas1:jogadas2;
-		Crmi cl = teams.get(team).get(countPlayer);
+		Crmi cl;
+		String jogadas;
+		if(countPlayer % 2 != 0){
+			cl = team1.get(countPlayer);
+			jogadas = jogadas1;
+		}else{
+			cl = team2.get(countPlayer);
+			jogadas = jogadas2;
+		}
 		String coordenadas = "";
 		String hit = "N";
 		try {
