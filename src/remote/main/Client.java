@@ -46,6 +46,7 @@ public class Client extends UnicastRemoteObject implements Crmi, ActionListener 
 	private static int id;
 	private static boolean out;
 	private boolean finished = false;
+	private static boolean local;
 
 	protected Client(int port) throws RemoteException {
 		super(port);
@@ -227,7 +228,10 @@ public class Client extends UnicastRemoteObject implements Crmi, ActionListener 
 
 	public static void main(String[] args) {
 		try {
-//			System.setProperty("java.rmi.server.hostname", IPTest.findoutMyIp());
+			local = true;
+			if(!local){
+				System.setProperty("java.rmi.server.hostname", IPTest.findoutMyIp());
+			}
 			montarJanelas();
 			frame.setVisible(true);
 			frame.setTitle("Batalha naval");
@@ -381,7 +385,6 @@ public class Client extends UnicastRemoteObject implements Crmi, ActionListener 
 			id = server.getId("rmId");
 //			reg.rebind("clientBS"+id, client); // local
 			Registry regCl = reg;
-			boolean local = true;
 			if(!local ){
 				regCl = LocateRegistry.createRegistry(1099); // usado para quando for cliente e servidor em maquinas diferentes
 			}
