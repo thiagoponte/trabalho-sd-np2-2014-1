@@ -12,6 +12,7 @@ import java.util.Random;
 
 import remote.interfaces.Crmi;
 import remote.interfaces.Srmi;
+import test.IPTest;
 import business.Constantes;
 
 public class Server extends UnicastRemoteObject implements Srmi{
@@ -53,6 +54,7 @@ public class Server extends UnicastRemoteObject implements Srmi{
 	}
 
 	public static void main(String[] args) {
+		System.setProperty("java.rmi.server.hostname", IPTest.findoutMyIp());
 		startRegistry();
 		try{
 			while(qtJogadores <= qtPlayer){

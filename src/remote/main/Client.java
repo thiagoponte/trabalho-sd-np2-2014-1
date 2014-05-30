@@ -9,14 +9,10 @@ import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.net.InetAddress;
-import java.net.NetworkInterface;
-import java.net.SocketException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
-import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Random;
@@ -34,6 +30,7 @@ import javax.swing.border.TitledBorder;
 
 import remote.interfaces.Crmi;
 import remote.interfaces.Srmi;
+import test.IPTest;
 import business.Constantes;
 
 public class Client extends UnicastRemoteObject implements Crmi, ActionListener{
@@ -223,6 +220,7 @@ public class Client extends UnicastRemoteObject implements Crmi, ActionListener{
 	
 	public static void main(String[] args) {
 		try {
+//			System.setProperty("java.rmi.server.hostname", IPTest.findoutMyIp());
 			montarJanelas();
 			frame.setVisible(true);
 			frame.setTitle("Batalha naval");
@@ -352,6 +350,8 @@ public class Client extends UnicastRemoteObject implements Crmi, ActionListener{
 	private void conectar() {
 		try {
 			Registry reg = LocateRegistry.getRegistry(ipAddr.getText());
+			
+			String ip = IPTest.findoutMyIp();
 			Random r = new Random();
 			int port = 0;
 			do{
@@ -365,8 +365,13 @@ public class Client extends UnicastRemoteObject implements Crmi, ActionListener{
 			}
 			Srmi server = (Srmi) reg.lookup("serverBS");
 			id = server.getId("rmId");
-			reg.rebind("clientBS"+id, client);
-			String ip = findoutMyIp();
+//			reg.rebind("clientBS"+id, client); // local
+			Registry regCl = reg;
+			boolean local = true;
+			if(!local ){
+				regCl = LocateRegistry.createRegistry(1099); // usado para quando for cliente e servidor em maquinas diferentes
+			}
+			regCl.rebind("clientBS"+id, client); //remoto
 			System.out.println(ip);
 			server.recebeIp(ip, "clientBS"+id);
 			System.out.println("clientBS"+id);
@@ -374,24 +379,5 @@ public class Client extends UnicastRemoteObject implements Crmi, ActionListener{
 			System.out.println("HelloClient exception: " + e);
 			e.printStackTrace();
 		}
-	}
-
-	private String findoutMyIp() {
-		try {
-			Enumeration<NetworkInterface> nis = NetworkInterface.getNetworkInterfaces();
-			while (nis.hasMoreElements()) {
-				NetworkInterface ni = nis.nextElement();
-				Enumeration<InetAddress> enu = ni.getInetAddresses();
-				while(enu.hasMoreElements()){
-					InetAddress inet = enu.nextElement();
-					if(inet.getHostAddress().length() < 15 && !inet.getHostAddress().startsWith("127.0")){
-						return (inet.getHostAddress());
-					}
-				}
-			}
-		} catch (SocketException e) {
-			e.printStackTrace();
-		}
-		return "127.0.0.1";
 	}
 }
