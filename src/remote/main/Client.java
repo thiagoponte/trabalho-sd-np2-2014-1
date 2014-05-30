@@ -20,6 +20,7 @@ import java.util.Random;
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -47,6 +48,7 @@ public class Client extends UnicastRemoteObject implements Crmi, ActionListener 
 	private static boolean out;
 	private boolean finished = false;
 	private static boolean local;
+	private static JCheckBox checkLocal;
 
 	protected Client(int port) throws RemoteException {
 		super(port);
@@ -118,7 +120,7 @@ public class Client extends UnicastRemoteObject implements Crmi, ActionListener 
 		finished = true;
 		new Thread(new Runnable() {
 			public void run() {
-				//Só mostra a mensagem de desistir em janelas ainda abertas
+				//Sï¿½ mostra a mensagem de desistir em janelas ainda abertas
 				if (!out) {
 					JOptionPane.showMessageDialog(frame, msg);
 					frame.dispose();
@@ -230,7 +232,7 @@ public class Client extends UnicastRemoteObject implements Crmi, ActionListener 
 		try {
 			local = true;
 			if(!local){
-				System.setProperty("java.rmi.server.hostname", IPTest.findoutMyIp());
+				
 			}
 			montarJanelas();
 			frame.setVisible(true);
@@ -239,7 +241,7 @@ public class Client extends UnicastRemoteObject implements Crmi, ActionListener 
 			out = false;
 			frame.addWindowListener(new java.awt.event.WindowAdapter() {
 				public void windowClosed(java.awt.event.WindowEvent evt) {
-					// Sinaliza que vai sair ao método getCoordenadas
+					// Sinaliza que vai sair ao mï¿½todo getCoordenadas
 					out = true;
 				}
 			});
@@ -340,7 +342,21 @@ public class Client extends UnicastRemoteObject implements Crmi, ActionListener 
 		JLabel lblIp = new JLabel("IP Servidor: ");
 		lblIp.setBounds(22, 355, 117, 15);
 		principal.add(lblIp);
-
+		
+		JLabel lblLocal = new JLabel("Local: ");
+		lblLocal.setBounds(22, 375, 117, 15);
+		principal.add(lblLocal);
+		
+		checkLocal = new JCheckBox();
+		try {
+			checkLocal.addActionListener(new Client(0));
+			checkLocal.setActionCommand("local");
+		} catch (RemoteException e1) {
+			e1.printStackTrace();
+		}
+		checkLocal.setBounds(92, 375, 50, 15);
+		principal.add(checkLocal);
+		
 		btnConnect = new JButton("Conectar");
 		btnConnect.setBounds(153, 378, 117, 25);
 		try {
@@ -361,6 +377,9 @@ public class Client extends UnicastRemoteObject implements Crmi, ActionListener 
 			btnConnect.setActionCommand("");
 			ipAddr.setEditable(false);
 			btnConnect.setEnabled(false);
+			checkLocal.setEnabled(false);
+		} else if(e.getActionCommand().equalsIgnoreCase("local")){
+			local = checkLocal.isSelected();
 		}
 
 	}
@@ -368,6 +387,11 @@ public class Client extends UnicastRemoteObject implements Crmi, ActionListener 
 	private void conectar() {
 		try {
 			Registry reg = LocateRegistry.getRegistry(ipAddr.getText());
+			Registry regCl = reg;
+			if(!local){
+				System.setProperty("java.rmi.server.hostname", IPTest.findoutMyIp());
+				regCl = LocateRegistry.createRegistry(1099); // usado para quando for cliente e servidor em maquinas diferentes
+			}
 			
 			String ip = IPTest.findoutMyIp();
 			Random r = new Random();
@@ -384,10 +408,6 @@ public class Client extends UnicastRemoteObject implements Crmi, ActionListener 
 			Srmi server = (Srmi) reg.lookup("serverBS");
 			id = server.getId("rmId");
 //			reg.rebind("clientBS"+id, client); // local
-			Registry regCl = reg;
-			if(!local ){
-				regCl = LocateRegistry.createRegistry(1099); // usado para quando for cliente e servidor em maquinas diferentes
-			}
 			regCl.rebind("clientBS"+id, client); //remoto
 			System.out.println(ip);
 			server.recebeIp(ip, "clientBS" + id);
