@@ -36,7 +36,7 @@ import remote.interfaces.Crmi;
 import remote.interfaces.Srmi;
 import business.Constantes;
 
-public class Client extends UnicastRemoteObject implements Crmi, ActionListener{
+public class Client extends UnicastRemoteObject implements Crmi, ActionListener {
 	private static final long serialVersionUID = 6634189107612365845L;
 	private static JFrame frame;
 	private static HashMap<String, Integer> coordenadas;
@@ -47,29 +47,29 @@ public class Client extends UnicastRemoteObject implements Crmi, ActionListener{
 	private static JPanel rightPanel;
 	private static JButton btnConnect;
 	private static int id;
+	private static boolean out;
 	private boolean finished = false;
-	
+
 	protected Client(int port) throws RemoteException {
 		super(port);
 	}
 
 	@Override
-	public String getCoordenadas() throws RemoteException{
+	public String getCoordenadas() throws RemoteException {
 		String coordenadas = "";
 		while (coordenadas.length() != 2) {
 			coordenadas = JOptionPane.showInputDialog(frame,
-					"Digite as coordenadas juntas (ex. XY), " + System.getProperty("line.separator")
-					+ "jogadas informadas anteriormente " + System.getProperty("line.separator")
-					+ "ser\u00E3o desconsideradas.:");
+					"Digite as coordenadas juntas (ex. XY), " + System.getProperty("line.separator") + "jogadas informadas anteriormente "
+							+ System.getProperty("line.separator") + "ser\u00E3o desconsideradas.:");
 			if ((coordenadas == null) || coordenadas.equals("")) {
 				coordenadas = "";
 			} else {
 				try {
-					if (Integer.parseInt(coordenadas.charAt(1)+"") > 5 || Integer.parseInt(coordenadas.charAt(0)+"") > 5) {
+					if (Integer.parseInt(coordenadas.charAt(1) + "") > 5 || Integer.parseInt(coordenadas.charAt(0) + "") > 5) {
 						coordenadas = "";
 					}
 				} catch (Exception e) {
-					//e.printStackTrace();
+					// e.printStackTrace();
 					if (!coordenadas.equalsIgnoreCase("out")) {
 						System.out.println(coordenadas);
 						coordenadas = "";
@@ -82,11 +82,15 @@ public class Client extends UnicastRemoteObject implements Crmi, ActionListener{
 		if (coordenadas.length() == 2) {
 			coordenadas = coordenadas.charAt(1) + "" + coordenadas.charAt(0);
 		}
+
+		if (out) {
+			return "out";
+		}
 		return coordenadas;
 	}
 
 	@Override
-	public void atualizarUI(String hit, String coordenada, String teamID) throws RemoteException{
+	public void atualizarUI(String hit, String coordenada, String teamID) throws RemoteException {
 		Color mark = null;
 		if (hit.equalsIgnoreCase("S")) {
 			mark = Color.GREEN;
@@ -107,24 +111,27 @@ public class Client extends UnicastRemoteObject implements Crmi, ActionListener{
 				team2.get(coordenada).setBackground(mark);
 			}
 		}
-		
+
 	}
 
 	@Override
-	public void finalizarJogo(final String msg) throws RemoteException{
+	public void finalizarJogo(final String msg) throws RemoteException {
 		System.out.println(msg);
 		finished = true;
 		new Thread(new Runnable() {
 			public void run() {
-				JOptionPane.showMessageDialog(frame, msg);
-				frame.dispose();
+				//Só mostra a mensagem de desistir em janelas ainda abertas
+				if (!out) {
+					JOptionPane.showMessageDialog(frame, msg);
+					frame.dispose();
+				}
 				System.exit(0);
 			}
 		}).start();
 	}
 
 	@Override
-	public void setMapa(HashMap<String, Integer> mapa) throws RemoteException{
+	public void setMapa(HashMap<String, Integer> mapa) throws RemoteException {
 		coordenadas = mapa;
 		for (int i = 0; i < 6; i++) {
 			for (int j = 0; j < 6; j++) {
@@ -215,23 +222,30 @@ public class Client extends UnicastRemoteObject implements Crmi, ActionListener{
 			}
 		}.start();
 	}
-	
+
 	private static void updateUI() {
 		frame.repaint(12, 12, 401, 322);
 		frame.revalidate();
 	}
-	
+
 	public static void main(String[] args) {
 		try {
 			montarJanelas();
 			frame.setVisible(true);
 			frame.setTitle("Batalha naval");
 			frame.setIconImage(ImageIO.read(new File("src/img/b2.png")));
+			out = false;
+			frame.addWindowListener(new java.awt.event.WindowAdapter() {
+				public void windowClosed(java.awt.event.WindowEvent evt) {
+					// Sinaliza que vai sair ao método getCoordenadas
+					out = true;
+				}
+			});
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
-	
+
 	private static void montarJanelas() {
 		frame = new JFrame();
 		frame.setBounds(100, 100, 882, 460);
@@ -354,22 +368,22 @@ public class Client extends UnicastRemoteObject implements Crmi, ActionListener{
 			Registry reg = LocateRegistry.getRegistry(ipAddr.getText());
 			Random r = new Random();
 			int port = 0;
-			do{
+			do {
 				port = r.nextInt(10080);
-			}while(port < 1500);
+			} while (port < 1500);
 			Crmi client = (Crmi) new Client(port);
-			try{
+			try {
 				client = (Crmi) UnicastRemoteObject.exportObject(client);
-			} catch(Exception e2){
-//				e2.printStackTrace();
+			} catch (Exception e2) {
+				// e2.printStackTrace();
 			}
 			Srmi server = (Srmi) reg.lookup("serverBS");
 			id = server.getId("rmId");
-			reg.rebind("clientBS"+id, client);
+			reg.rebind("clientBS" + id, client);
 			String ip = findoutMyIp();
 			System.out.println(ip);
-			server.recebeIp(ip, "clientBS"+id);
-			System.out.println("clientBS"+id);
+			server.recebeIp(ip, "clientBS" + id);
+			System.out.println("clientBS" + id);
 		} catch (Exception e) {
 			System.out.println("HelloClient exception: " + e);
 			e.printStackTrace();
@@ -382,9 +396,9 @@ public class Client extends UnicastRemoteObject implements Crmi, ActionListener{
 			while (nis.hasMoreElements()) {
 				NetworkInterface ni = nis.nextElement();
 				Enumeration<InetAddress> enu = ni.getInetAddresses();
-				while(enu.hasMoreElements()){
+				while (enu.hasMoreElements()) {
 					InetAddress inet = enu.nextElement();
-					if(inet.getHostAddress().length() < 15 && !inet.getHostAddress().startsWith("127.0")){
+					if (inet.getHostAddress().length() < 15 && !inet.getHostAddress().startsWith("127.0")) {
 						return (inet.getHostAddress());
 					}
 				}
