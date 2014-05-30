@@ -32,8 +32,15 @@ public class Server extends UnicastRemoteObject implements Srmi{
 	}
 
 	@Override
-	public int getId(String remoteId) throws RemoteException{
-		return qtJogadores;
+	public int getId(Crmi cl) throws RemoteException{
+		int pID = qtJogadores;
+		qtJogadores++;
+		if(pID % 2 != 0){
+			team1.put(pID, cl);
+		}else{
+			team2.put(pID, cl);
+		}
+		return pID;
 	}
 	
 	@Override

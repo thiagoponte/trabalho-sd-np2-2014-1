@@ -406,11 +406,11 @@ public class Client extends UnicastRemoteObject implements Crmi, ActionListener 
 				// e2.printStackTrace();
 			}
 			Srmi server = (Srmi) reg.lookup("serverBS");
-			id = server.getId("rmId");
+			id = server.getId(client);
 //			reg.rebind("clientBS"+id, client); // local
-			regCl.rebind("clientBS"+id, client); //remoto
+//			regCl.rebind("clientBS"+id, client); //remoto
 			System.out.println(ip);
-			server.recebeIp(ip, "clientBS" + id);
+//			server.recebeIp(ip, "clientBS" + id);
 			System.out.println("clientBS" + id);
 		} catch (Exception e) {
 			System.out.println("HelloClient exception: " + e);
