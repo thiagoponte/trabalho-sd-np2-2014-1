@@ -44,7 +44,6 @@ public class ConnectorTCP implements Connector, Connection {
 
 	@Override
 	public Connection connect(String ip, int port) {
-		// TODO Auto-generated method stub
 		try {
 			s = new Socket(ip, port);
 			setIp(InetAddress.getByName(ip));

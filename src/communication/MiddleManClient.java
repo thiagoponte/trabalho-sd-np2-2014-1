@@ -37,7 +37,6 @@ public class MiddleManClient {
 	}
 
 	public String enviarCoordenadas(String coordenada, int id) {
-		// String msg = id+"\\|"+coordenada;
 		connection.send(coordenada);
 		return null;
 	}

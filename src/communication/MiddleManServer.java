@@ -51,14 +51,11 @@ public class MiddleManServer {
 		System.out.println("Mandou PLAY para "+c.getIp().getHostName());
 		
 		String coordenada = c.recieve();
-		// Remove o jogador do time
 		System.out.println(coordenada);
 		if (coordenada.equalsIgnoreCase("out")) {
 			if (team1.containsKey(playerId)) {
-//				team1.remove(team1.get(playerId));
 				return "out1";
 			} else if (team2.containsKey(playerId)) {
-//				team2.remove(team2.get(playerId));
 				return "out2";
 			}
 		}
@@ -77,24 +74,18 @@ public class MiddleManServer {
 			hit = "S";
 			mapa.remove(coordenada);
 		}
-		// c.send("update|"+hit+"|"+coordenada+"|"+playerId);
-//		atualizarMapas(mapa, coordenada, hit, playerId);
 		return coordenada+";"+hit;
 	}
 
 	public void atualizarMapas(LinkedHashMap<String, Integer> mapa, String coordenada, String hit, int playerId) {
 		String team = playerId % 2 != 0 ? "1" : "2";
 		for (Entry<Integer, Object> e : team1.entrySet()) {
-			// if(e.getKey() != playerId){
 			Connection c = (Connection) e.getValue();
 			c.send("update|" + hit + "|" + coordenada + "|" + team);
-			// }
 		}
 		for (Entry<Integer, Object> e : team2.entrySet()) {
-			// if(e.getKey() != playerId){
 			Connection c = (Connection) e.getValue();
 			c.send("update|" + hit + "|" + coordenada + "|" + team);
-			// }
 		}
 
 	}

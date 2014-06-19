@@ -7,10 +7,6 @@ import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.util.HashMap;
 
-/**
- * @author Argeu
- *
- */
 public interface Crmi extends Remote {
 	String getCoordenadas() throws RemoteException;
 	void atualizarUI(String hit, String coordenada, String team) throws RemoteException;

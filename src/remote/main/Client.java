@@ -54,6 +54,9 @@ public class Client extends UnicastRemoteObject implements Crmi, ActionListener 
 		super(port);
 	}
 
+	/**
+	 * Recebe a jogada do cliente
+	 */
 	@Override
 	public String getCoordenadas() throws RemoteException {
 		String coordenadas = "";
@@ -69,7 +72,6 @@ public class Client extends UnicastRemoteObject implements Crmi, ActionListener 
 						coordenadas = "";
 					}
 				} catch (Exception e) {
-					// e.printStackTrace();
 					if (!coordenadas.equalsIgnoreCase("out")) {
 						System.out.println(coordenadas);
 						coordenadas = "";
@@ -82,13 +84,15 @@ public class Client extends UnicastRemoteObject implements Crmi, ActionListener 
 		if (coordenadas.length() == 2) {
 			coordenadas = coordenadas.charAt(1) + "" + coordenadas.charAt(0);
 		}
-
 		if (out) {
 			return "out";
 		}
 		return coordenadas;
 	}
 
+	/**
+	 * Atualiza a GUI
+	 */
 	@Override
 	public void atualizarUI(String hit, String coordenada, String teamID) throws RemoteException {
 		Color mark = null;
@@ -114,13 +118,15 @@ public class Client extends UnicastRemoteObject implements Crmi, ActionListener 
 
 	}
 
+	/**
+	 * Finaliza o jogo
+	 */
 	@Override
 	public void finalizarJogo(final String msg) throws RemoteException {
 		System.out.println(msg);
 		finished = true;
 		new Thread(new Runnable() {
 			public void run() {
-				//S� mostra a mensagem de desistir em janelas ainda abertas
 				if (!out) {
 					JOptionPane.showMessageDialog(frame, msg);
 					frame.dispose();
@@ -130,6 +136,9 @@ public class Client extends UnicastRemoteObject implements Crmi, ActionListener 
 		}).start();
 	}
 
+	/**
+	 * Seta o mapa do cliente
+	 */
 	@Override
 	public void setMapa(HashMap<String, Integer> mapa) throws RemoteException {
 		coordenadas = mapa;
@@ -223,11 +232,18 @@ public class Client extends UnicastRemoteObject implements Crmi, ActionListener 
 		}.start();
 	}
 
+	/**
+	 * Atualiza a GUI
+	 */
 	private static void updateUI() {
 		frame.repaint(12, 12, 401, 322);
 		frame.revalidate();
 	}
 
+	/**
+	 * Inicia o cliente
+	 * @param args
+	 */
 	public static void main(String[] args) {
 		try {
 			local = true;
@@ -241,7 +257,6 @@ public class Client extends UnicastRemoteObject implements Crmi, ActionListener 
 			out = false;
 			frame.addWindowListener(new java.awt.event.WindowAdapter() {
 				public void windowClosed(java.awt.event.WindowEvent evt) {
-					// Sinaliza que vai sair ao m�todo getCoordenadas
 					out = true;
 				}
 			});
@@ -250,6 +265,9 @@ public class Client extends UnicastRemoteObject implements Crmi, ActionListener 
 		}
 	}
 
+	/**
+	 * Monta a tela usando Swing
+	 */
 	private static void montarJanelas() {
 		frame = new JFrame();
 		frame.setBounds(100, 100, 882, 460);
@@ -332,7 +350,6 @@ public class Client extends UnicastRemoteObject implements Crmi, ActionListener 
 		}
 
 		principal.add(rightPanel);
-
 		ipAddr = new JTextField();
 		ipAddr.setBounds(153, 355, 90, 19);
 		ipAddr.setColumns(20);
@@ -370,6 +387,9 @@ public class Client extends UnicastRemoteObject implements Crmi, ActionListener 
 		frame.getContentPane().add(principal);
 	}
 
+	/**
+	 * Captura o clique no botão conectar
+	 */
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if (e.getActionCommand().equalsIgnoreCase("conectar")) {
@@ -384,6 +404,9 @@ public class Client extends UnicastRemoteObject implements Crmi, ActionListener 
 
 	}
 
+	/**
+	 * Conecta ao IP fornecido
+	 */
 	private void conectar() {
 		try {
 			Registry reg = LocateRegistry.getRegistry(ipAddr.getText());
@@ -392,7 +415,6 @@ public class Client extends UnicastRemoteObject implements Crmi, ActionListener 
 				System.setProperty("java.rmi.server.hostname", IPTest.findoutMyIp());
 				regCl = LocateRegistry.createRegistry(1099); // usado para quando for cliente e servidor em maquinas diferentes
 			}
-			
 			String ip = IPTest.findoutMyIp();
 			Random r = new Random();
 			int port = 0;
@@ -403,14 +425,10 @@ public class Client extends UnicastRemoteObject implements Crmi, ActionListener 
 			try {
 				client = (Crmi) UnicastRemoteObject.exportObject(client);
 			} catch (Exception e2) {
-				// e2.printStackTrace();
 			}
 			Srmi server = (Srmi) reg.lookup("serverBS");
 			id = server.getId(client);
-//			reg.rebind("clientBS"+id, client); // local
-//			regCl.rebind("clientBS"+id, client); //remoto
 			System.out.println(ip);
-//			server.recebeIp(ip, "clientBS" + id);
 			System.out.println("clientBS" + id);
 		} catch (Exception e) {
 			System.out.println("HelloClient exception: " + e);

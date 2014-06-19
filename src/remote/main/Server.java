@@ -31,6 +31,9 @@ public class Server extends UnicastRemoteObject implements Srmi{
 		super();
 	}
 
+	/**
+	 * Gera o id dos clientes
+	 */
 	@Override
 	public int getId(Crmi cl) throws RemoteException{
 		int pID = qtJogadores;
@@ -43,6 +46,9 @@ public class Server extends UnicastRemoteObject implements Srmi{
 		return pID;
 	}
 	
+	/**
+	 * Recebe o IP do cliente
+	 */
 	@Override
 	public void recebeIp(String ip, String refId) throws RemoteException {
 		Registry reg = LocateRegistry.getRegistry(ip);
@@ -60,6 +66,10 @@ public class Server extends UnicastRemoteObject implements Srmi{
 		}
 	}
 
+	/**
+	 * Instancia o servidor
+	 * @param args
+	 */
 	public static void main(String[] args) {
 		System.setProperty("java.rmi.server.hostname", IPTest.findoutMyIp());
 		startRegistry();
@@ -83,7 +93,6 @@ public class Server extends UnicastRemoteObject implements Srmi{
 				LinkedHashMap<String, Integer> mapa = countPlayer%2!=0?mapa2:mapa1;
 				String hit = receberJogada(countPlayer, mapa);
 				System.out.println(hit);
-				// Terminar o jogo por desistencia de um jogador
 				if (hit.contains("out")) {
 					if (hit.contains("1")) {
 						finalizarJogo(2, " pois a outra equipe desistiu");
@@ -123,25 +132,34 @@ public class Server extends UnicastRemoteObject implements Srmi{
 		}
 	}
 
+	/**
+	 * Atualiza os mapas dos jogagores
+	 * @param mapa
+	 * @param coordenada
+	 * @param hit
+	 * @param countPlayer
+	 */
 	private static void atualizarMapas(LinkedHashMap<String, Integer> mapa,	String coordenada, String hit, int countPlayer) {
 		try {
 			String team = countPlayer % 2 != 0 ? "1" : "2";
 			for (Entry<Integer, Crmi> e : team1.entrySet()) {
-				// if(e.getKey() != playerId){
 				Crmi c = e.getValue();
 				c.atualizarUI(hit, coordenada, team);
-				// }
 			}
 			for (Entry<Integer, Crmi> e : team2.entrySet()) {
-				// if(e.getKey() != playerId){
 				Crmi c = e.getValue();
 				c.atualizarUI(hit, coordenada, team);
-				// }
 			}
 		} catch (RemoteException e1) {
 			e1.printStackTrace();
 		}
 	}
+	
+	/**
+	 * Finaliza o jogo
+	 * @param team
+	 * @param extra
+	 */
 	private static void finalizarJogo(int team, String extra) {
 		final String msgVitoria = "Sua equipe ganhou" + extra + "!";
 		final String msgDerrota = "Sua equipe foi derrotada!";
@@ -171,6 +189,10 @@ public class Server extends UnicastRemoteObject implements Srmi{
 		}
 		System.out.println("Mandou o fim dos perdedores");
 	}
+	
+	/**
+	 * Registra o Objeto remoto
+	 */
 	private static void startRegistry() {
 		try {
 			Registry reg = LocateRegistry.createRegistry(1099);
@@ -178,7 +200,6 @@ public class Server extends UnicastRemoteObject implements Srmi{
 			try{
 				serv = (Srmi) UnicastRemoteObject.exportObject(serv);
 			} catch(Exception e2){
-//				e2.printStackTrace();
 			}
 			reg.rebind("serverBS", serv);
 			System.out.println("Battleship Server is ready.");
@@ -187,6 +208,13 @@ public class Server extends UnicastRemoteObject implements Srmi{
 			e.printStackTrace();
 		}
 	}
+	
+	/**
+	 * Recebe a jogada do cliente
+	 * @param countPlayer
+	 * @param mapa
+	 * @return
+	 */
 	private static String receberJogada(int countPlayer, LinkedHashMap<String, Integer> mapa) {
 		Crmi cl;
 		String jogadas;
@@ -225,6 +253,11 @@ public class Server extends UnicastRemoteObject implements Srmi{
 		}
 		return coordenadas+";"+hit;
 	}
+	
+	/**
+	 * Gera o mapa dos clientes
+	 * @return
+	 */
 	private static LinkedHashMap<String, Integer> gerarMapa() {
 		LinkedHashMap<String, Integer> mapa = new LinkedHashMap<String, Integer>();
 		gerarNavio1(mapa);
@@ -232,6 +265,10 @@ public class Server extends UnicastRemoteObject implements Srmi{
 		return mapa;
 	}
 
+	/**
+	 * Posiciona os navios de tamanho 2 no mapa
+	 * @param mapa
+	 */
 	private static void gerarNavio2(LinkedHashMap<String, Integer> mapa) {
 		for (int i = 0; i < 3; i++) {
 			Random r = new Random();
@@ -290,6 +327,10 @@ public class Server extends UnicastRemoteObject implements Srmi{
 		}
 	}
 
+	/**
+	 * Posiciona os navios de tamanho 1 no mapa
+	 * @param mapa
+	 */
 	private static void gerarNavio1(LinkedHashMap<String, Integer> mapa) {
 		for (int i = 0; i < 5; i++) {
 			Random r = new Random();

@@ -16,7 +16,7 @@ public class Server {
 	 * @throws IOException
 	 */
 	public static void main(String[] args) throws IOException {
-		System.out.println("Servidor está rodando");
+		System.out.println("Servidor rodando");
 		int qtPlayer = 2;
 		MiddleManServer mms = new MiddleManServer(qtPlayer);
 		LinkedHashMap<String, Integer> mapa1 = gerarMapa();

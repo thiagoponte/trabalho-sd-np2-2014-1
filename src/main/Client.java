@@ -55,7 +55,7 @@ public class Client implements ActionListener {
 	}
 
 	/**
-	 * Faz a conec√ß√£o com o server
+	 * Faz a conex„o com o server
 	 */
 	private void conectar() {
 		mmc = new MiddleManClient();
@@ -375,7 +375,7 @@ public class Client implements ActionListener {
 	}
 
 	/**
-	 * Captura o clique no bot√£o conectar
+	 * Captura o clique no bot„o conectar
 	 */
 	@Override
 	public void actionPerformed(ActionEvent e) {

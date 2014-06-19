@@ -21,13 +21,11 @@ public class ConnectorUDP implements Connector, Connection {
 
 	@Override
 	public Connection connect(String ip, int port) {
-		// TODO Auto-generated method stub
 		try {
 			ds = new DatagramSocket();
 			ds.connect(new InetSocketAddress(ip, port));
 			setIp(InetAddress.getByName(ip));
 			setPort(port);
-			// Envia uma mensagem para o servidor aceit�-la
 			send("Connect");
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -89,7 +87,6 @@ public class ConnectorUDP implements Connector, Connection {
 			ss = new DatagramSocket(port);
 			clients = new ArrayList<DatagramSocket>();
 		} catch (SocketException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return this;
@@ -97,8 +94,6 @@ public class ConnectorUDP implements Connector, Connection {
 
 	@Override
 	public Connection acceptClient() throws IOException {
-		// accept bloqueia enquanto n�o receber uma conex�o
-
 		byte[] buffer = new byte[1000];
 		DatagramSocket c = new DatagramSocket();
 		DatagramPacket pacote = new DatagramPacket(buffer, buffer.length);
@@ -107,7 +102,6 @@ public class ConnectorUDP implements Connector, Connection {
 		c.connect(pacote.getAddress(), pacote.getPort());
 		clients.add(c);
 
-		// retorna IP e porta da conex�o
 		setIp(pacote.getAddress());
 		setPort(pacote.getPort());
 		ConnectorUDP cUDP = new ConnectorUDP();
