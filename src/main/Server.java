@@ -1,9 +1,7 @@
 package main;
 
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
-import java.util.Map.Entry;
 import java.util.Random;
 
 import business.Constantes;
@@ -11,12 +9,17 @@ import business.Constantes;
 import communication.MiddleManServer;
 
 public class Server {
+	
+	/**
+	 * Inicia o servidor
+	 * @param args
+	 * @throws IOException
+	 */
 	public static void main(String[] args) throws IOException {
+		System.out.println("Servidor está rodando");
 		int qtPlayer = 2;
 		MiddleManServer mms = new MiddleManServer(qtPlayer);
-//		System.out.println("MAPA 1--------------------------------");
 		LinkedHashMap<String, Integer> mapa1 = gerarMapa();
-//		System.out.println("MAPA 2--------------------------------");
 		LinkedHashMap<String, Integer> mapa2 = gerarMapa();
 		mms.enviarMapa(mapa1, 1);
 		mms.enviarMapa(mapa2, 2);
@@ -35,14 +38,12 @@ public class Server {
 			}
 			
 			System.out.println(hit);
-			// Terminar o jogo por desist�ncia de um jogador
 			if (hit.contains("out")) {
 				if (hit.contains("1")) {
 					mms.finalizarJogo(2, " pois a outra equipe desistiu");
 				} else {
 					mms.finalizarJogo(1, " pois a outra equipe desistiu");
 				}
-
 				finished = true;
 				mms.close();
 			}else{
@@ -74,22 +75,21 @@ public class Server {
 		}
 	}
 
+	/**
+	 * Gera o mapa
+	 * @return
+	 */
 	private static LinkedHashMap<String, Integer> gerarMapa() {
 		LinkedHashMap<String, Integer> mapa = new LinkedHashMap<String, Integer>();
 		gerarNavio1(mapa);
 		gerarNavio2(mapa);
-//		printMap(mapa);
 		return mapa;
 	}
 
-	@Deprecated
-	private static void printMap(HashMap<String, Integer> mapa) {
-		for (Entry<String, Integer> entry : mapa.entrySet()) {
-			System.out.println(entry.getKey() + " - > " + entry.getValue());
-		}
-
-	}
-
+	/**
+	 * Posiciona os navios de tamanho 2 no mapa
+	 * @param mapa
+	 */
 	private static void gerarNavio2(LinkedHashMap<String, Integer> mapa) {
 		for (int i = 0; i < 3; i++) {
 			Random r = new Random();
@@ -148,6 +148,10 @@ public class Server {
 		}
 	}
 
+	/**
+	 * Posiciona os navios de tamanho 1 no mapa
+	 * @param mapa
+	 */
 	private static void gerarNavio1(LinkedHashMap<String, Integer> mapa) {
 		for (int i = 0; i < 5; i++) {
 			Random r = new Random();
