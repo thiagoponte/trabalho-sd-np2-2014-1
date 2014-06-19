@@ -1,7 +1,7 @@
 trabalho-sd-np2-2014-1
 ======================
 
-Trabalho de Sistemas Distribuídos 2014.1 - NP2
+#Trabalho de Sistemas Distribuídos 2014.1 - NP2
 
 O intuito deste trabalho é criar um simples jogo de batalha naval, que pode ser jogado através da rede.
 
@@ -18,8 +18,14 @@ Depois deve rodar a quantidade de clientes que foram configurados no servidor ->
 
 -Java RMI
 
+A implementação utilizando Java RMI segue o mesmo princípio.
 
-Assignment for Distributed Systems 2014.1
+Para iniciar o servidor -> src/remote/main/Server.java
+
+Para iniciar o cliente  -> src/remote/main/Client.java
+
+
+#Assignment for Distributed Systems 2014.1
 
 The purpose of this assignment is to create a simple battleship game, which can be played using the network.
 
@@ -35,3 +41,9 @@ Then you run the amount of clients you configured in the server  -> src/main/Cli
 
 
 -Java RMI
+
+The Java RMI implementation follows the same instructions.
+
+To start the server -> src/remote/main/Server.java
+
+To start the client -> src/remote/main/Client.java
