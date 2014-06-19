@@ -39,27 +39,24 @@ public class Client implements ActionListener {
 	private static int id;
 	private boolean finished = false;
 
+	/**
+	 * Inicia o cliente
+	 * @param args
+	 */
 	public static void main(String[] args) {
 		try {
 			montarJanelas();
 			frame.setVisible(true);
 			frame.setTitle("Batalha naval");
 			frame.setIconImage(ImageIO.read(new File("src/img/b2.png")));
-//			frame.addWindowListener(new java.awt.event.WindowAdapter() {
-//				public void windowClosed(java.awt.event.WindowEvent evt) {
-//					// Fecha conex�o ao fechar janela e envia mensagem de
-//					// sa�da
-//					if (mmc != null) {
-//						mmc.enviarMensagem("out");
-//						mmc.fechar();
-//					}
-//				}
-//			});
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
 
+	/**
+	 * Faz a conecção com o server
+	 */
 	private void conectar() {
 		mmc = new MiddleManClient();
 		String ip = ipAddr.getText();
@@ -171,7 +168,6 @@ public class Client implements ActionListener {
 						} else {
 							finished = true;
 							comando = "fim";
-							// sai do loop pois o jogo terminou por desconex�o
 							break;
 						}
 					} catch (Exception e) {
@@ -179,7 +175,6 @@ public class Client implements ActionListener {
 						System.out.println(comando);
 						finished = true;
 						comando = "fim";
-						// sai do loop pois o jogo terminou
 						break;
 
 					}
@@ -266,11 +261,17 @@ public class Client implements ActionListener {
 
 	}
 
+	/**
+	 * Atualiza a GUI
+	 */
 	private static void updateUI() {
 		frame.repaint(12, 12, 401, 322);
 		frame.revalidate();
 	}
 
+	/**
+	 * Monta a tela usando Swing
+	 */
 	private static void montarJanelas() {
 		frame = new JFrame();
 		frame.setBounds(100, 100, 882, 460);
@@ -373,6 +374,9 @@ public class Client implements ActionListener {
 		frame.getContentPane().add(principal);
 	}
 
+	/**
+	 * Captura o clique no botão conectar
+	 */
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if (e.getActionCommand().equalsIgnoreCase("conectar")) {
